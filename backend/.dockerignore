@@ -1,0 +1,54 @@
+# Dataset and training data
+chest_xray/
+
+# Python cache and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Development and training files
+train_*.py
+test_api.py
+
+# Archives and temporary files
+*.zip
+*.tar
+*.tar.gz
+*.log
+*.tmp
+*.cache/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Environment and config
+.env
+.env.local
+venv/
+env/
+
+# Git and Docker development files
+.git/
+.gitignore
+docker-compose*.yml
+README.md
+
+# Model files (include only needed ones explicitly in Dockerfile)
+*.pt
+*.onnx
+*.pkl
+
+# Jupyter notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/

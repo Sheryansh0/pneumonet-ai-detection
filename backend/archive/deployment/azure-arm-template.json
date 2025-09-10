@@ -1,0 +1,101 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "pneumonia-detection-api",
+      "metadata": {
+        "description": "Name for the container group"
+      }
+    },
+    "containerImage": {
+      "type": "string",
+      "defaultValue": "sheryansh/pneumonia-detection-api:latest",
+      "metadata": {
+        "description": "Container image to deploy"
+      }
+    },
+    "dnsNameLabel": {
+      "type": "string",
+      "defaultValue": "pneumonia-detection-sheryansh",
+      "metadata": {
+        "description": "DNS name label for the public IP"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources"
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-03-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "containers": [
+          {
+            "name": "pneumonia-api",
+            "properties": {
+              "image": "[parameters('containerImage')]",
+              "ports": [
+                {
+                  "port": 5000,
+                  "protocol": "TCP"
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                },
+                {
+                  "name": "DISABLE_CAM",
+                  "value": "0"
+                },
+                {
+                  "name": "PORT",
+                  "value": "5000"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "cpu": 2.0,
+                  "memoryInGB": 8.0
+                }
+              }
+            }
+          }
+        ],
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "ipAddress": {
+          "type": "Public",
+          "ports": [
+            {
+              "protocol": "TCP",
+              "port": 5000
+            }
+          ],
+          "dnsNameLabel": "[parameters('dnsNameLabel')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "containerIPv4Address": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerGroupName'))).ipAddress.ip]"
+    },
+    "containerFQDN": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerGroupName'))).ipAddress.fqdn]"
+    }
+  }
+}

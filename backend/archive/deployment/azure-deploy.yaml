@@ -1,0 +1,34 @@
+apiVersion: 2019-12-01
+location: centralindia
+name: pneumonia-detection-api
+properties:
+  containers:
+    - name: pneumonia-api
+      properties:
+        image: sheryansh/pneumonia-detection-api:latest
+        resources:
+          requests:
+            cpu: 2.0
+            memoryInGb: 8.0
+        ports:
+          - port: 5000
+            protocol: TCP
+        environmentVariables:
+          - name: PYTHONUNBUFFERED
+            value: "1"
+          - name: DISABLE_CAM
+            value: "0"
+          - name: PORT
+            value: "5000"
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: tcp
+        port: 5000
+    dnsNameLabel: pneumonia-detection-sheryansh
+tags:
+  project: pneumonia-detection
+  environment: production
+type: Microsoft.ContainerInstance/containerGroups

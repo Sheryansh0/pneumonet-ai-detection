@@ -1,0 +1,12 @@
+{
+  "container_name": "pneumonia-detection-sheryansh",
+  "resource_group": "pneumonia-detection-rg",
+  "fqdn": "pneumonia-detection-sheryansh.centralindia.azurecontainer.io",
+  "ip_address": "4.213.209.75",
+  "port": 5000,
+  "api_url": "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io:5000",
+  "health_endpoint": "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io:5000/health",
+  "predict_endpoint": "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io:5000/predict",
+  "deployment_time": "2025-09-11 01:43:00",
+  "state": "Running"
+}

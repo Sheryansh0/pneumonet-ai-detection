@@ -1,0 +1,12 @@
+# Core web framework
+Flask==2.3.3
+Flask-CORS==4.0.0
+gunicorn==21.2.0
+
+# Computer vision and ML
+opencv-python-headless==4.8.1.78
+grad-cam==1.4.8
+Pillow==10.0.0
+
+# Only essential for inference (removed training-specific dependencies)
+# scikit-learn, seaborn, pandas, tqdm, torchmetrics removed as they're not used in app.py

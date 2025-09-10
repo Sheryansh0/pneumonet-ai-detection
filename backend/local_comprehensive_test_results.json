@@ -1,0 +1,135 @@
+{
+  "metrics": {
+    "total_images": 9,
+    "successful_predictions": 9,
+    "failed_predictions": 0,
+    "overall_accuracy": 0.8888888888888888,
+    "class_metrics": {
+      "BACTERIAL PNEUMONIA": {
+        "accuracy": 1.0,
+        "total_samples": 3,
+        "correct_predictions": 3,
+        "average_confidence": 96.59333333333335,
+        "min_confidence": 96.29,
+        "max_confidence": 96.75
+      },
+      "NORMAL": {
+        "accuracy": 1.0,
+        "total_samples": 3,
+        "correct_predictions": 3,
+        "average_confidence": 96.58999999999999,
+        "min_confidence": 96.36,
+        "max_confidence": 97.0
+      },
+      "VIRAL PNEUMONIA": {
+        "accuracy": 0.6666666666666666,
+        "total_samples": 3,
+        "correct_predictions": 2,
+        "average_confidence": 74.05666666666666,
+        "min_confidence": 61.98,
+        "max_confidence": 96.6
+      }
+    },
+    "confusion_matrix": {
+      "BACTERIAL PNEUMONIA": {
+        "BACTERIAL PNEUMONIA": 3
+      },
+      "NORMAL": {
+        "NORMAL": 3
+      },
+      "VIRAL PNEUMONIA": {
+        "BACTERIAL PNEUMONIA": 1,
+        "VIRAL PNEUMONIA": 2
+      }
+    },
+    "avg_response_time": 2.6730566554599338
+  },
+  "detailed_results": [
+    {
+      "success": true,
+      "predicted": "BACTERIAL PNEUMONIA",
+      "confidence": 96.74,
+      "risk_level": "High Risk",
+      "response_time": 2.6958279609680176,
+      "true_label": "BACTERIAL PNEUMONIA",
+      "image_path": "archive/chest_xray/test\\BACTERIAL PNEUMONIA\\jhabf.jpeg"
+    },
+    {
+      "success": true,
+      "predicted": "BACTERIAL PNEUMONIA",
+      "confidence": 96.75,
+      "risk_level": "High Risk",
+      "response_time": 2.6217689514160156,
+      "true_label": "BACTERIAL PNEUMONIA",
+      "image_path": "archive/chest_xray/test\\BACTERIAL PNEUMONIA\\person100_bacteria_475.jpeg"
+    },
+    {
+      "success": true,
+      "predicted": "BACTERIAL PNEUMONIA",
+      "confidence": 96.29,
+      "risk_level": "High Risk",
+      "response_time": 2.578117609024048,
+      "true_label": "BACTERIAL PNEUMONIA",
+      "image_path": "archive/chest_xray/test\\BACTERIAL PNEUMONIA\\person100_bacteria_477.jpeg"
+    },
+    {
+      "success": true,
+      "predicted": "NORMAL",
+      "confidence": 97.0,
+      "risk_level": "No Risk",
+      "response_time": 2.7231392860412598,
+      "true_label": "NORMAL",
+      "image_path": "archive/chest_xray/test\\NORMAL\\IM-0001-0001.jpeg"
+    },
+    {
+      "success": true,
+      "predicted": "NORMAL",
+      "confidence": 96.36,
+      "risk_level": "No Risk",
+      "response_time": 2.7239110469818115,
+      "true_label": "NORMAL",
+      "image_path": "archive/chest_xray/test\\NORMAL\\IM-0003-0001.jpeg"
+    },
+    {
+      "success": true,
+      "predicted": "NORMAL",
+      "confidence": 96.41,
+      "risk_level": "No Risk",
+      "response_time": 2.658123731613159,
+      "true_label": "NORMAL",
+      "image_path": "archive/chest_xray/test\\NORMAL\\IM-0005-0001.jpeg"
+    },
+    {
+      "success": true,
+      "predicted": "BACTERIAL PNEUMONIA",
+      "confidence": 63.59,
+      "risk_level": "Indeterminate (Low Confidence)",
+      "response_time": 2.647138833999634,
+      "true_label": "VIRAL PNEUMONIA",
+      "image_path": "archive/chest_xray/test\\VIRAL PNEUMONIA\\abcd.jpg"
+    },
+    {
+      "success": true,
+      "predicted": "VIRAL PNEUMONIA",
+      "confidence": 96.6,
+      "risk_level": "Medium Risk",
+      "response_time": 2.7277982234954834,
+      "true_label": "VIRAL PNEUMONIA",
+      "image_path": "archive/chest_xray/test\\VIRAL PNEUMONIA\\akbf.jpeg"
+    },
+    {
+      "success": true,
+      "predicted": "VIRAL PNEUMONIA",
+      "confidence": 61.98,
+      "risk_level": "Indeterminate (Low Confidence)",
+      "response_time": 2.6816842555999756,
+      "true_label": "VIRAL PNEUMONIA",
+      "image_path": "archive/chest_xray/test\\VIRAL PNEUMONIA\\aksj.jpg"
+    }
+  ],
+  "test_config": {
+    "api_url": "http://localhost:5000",
+    "test_date": "2025-09-11 01:32:37",
+    "total_images": 9
+  }
+}
