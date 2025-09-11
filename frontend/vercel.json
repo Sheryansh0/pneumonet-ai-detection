@@ -7,9 +7,17 @@
       "config": {
         "distDir": "build"
       }
+    },
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
     {
       "src": "/static/(.*)",
       "headers": {
@@ -20,5 +28,16 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/health.js": {
+      "runtime": "@vercel/node@3"
+    },
+    "api/predict.js": {
+      "runtime": "@vercel/node@3"
+    },
+    "api/test.js": {
+      "runtime": "@vercel/node@3"
+    }
+  }
 }

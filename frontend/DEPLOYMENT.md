@@ -5,6 +5,7 @@
 ### Method 1: GitHub Integration (Recommended)
 
 1. **Push your code to GitHub:**
+
    ```bash
    git add .
    git commit -m "Prepare for Vercel deployment"
@@ -21,11 +22,13 @@
 ### Method 2: Vercel CLI
 
 1. **Install Vercel CLI:**
+
    ```bash
    npm i -g vercel
    ```
 
 2. **Login to Vercel:**
+
    ```bash
    vercel login
    ```
@@ -62,6 +65,7 @@ frontend/
 ## 🔗 Backend Integration
 
 Update your backend URL in the Vercel environment variables:
+
 1. Go to your Vercel project dashboard
 2. Click "Settings" → "Environment Variables"
 3. Add `REACT_APP_API_URL` with your backend URL

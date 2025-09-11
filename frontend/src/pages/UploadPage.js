@@ -332,29 +332,41 @@ const UploadPage = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                <p className="text-slate-300">Ensure the X-ray image is clear and high quality</p>
+                <p className="text-slate-300">
+                  Ensure the X-ray image is clear and high quality
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                <p className="text-slate-300">Image should be properly oriented (not rotated)</p>
+                <p className="text-slate-300">
+                  Image should be properly oriented (not rotated)
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                <p className="text-slate-300">Avoid images with excessive noise or artifacts</p>
+                <p className="text-slate-300">
+                  Avoid images with excessive noise or artifacts
+                </p>
               </div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                <p className="text-slate-300">Use chest X-rays taken from the front (PA view preferred)</p>
+                <p className="text-slate-300">
+                  Use chest X-rays taken from the front (PA view preferred)
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                <p className="text-slate-300">Ensure proper exposure (not too dark or bright)</p>
+                <p className="text-slate-300">
+                  Ensure proper exposure (not too dark or bright)
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                <p className="text-slate-300">Remove any personal information from the image</p>
+                <p className="text-slate-300">
+                  Remove any personal information from the image
+                </p>
               </div>
             </div>
           </div>

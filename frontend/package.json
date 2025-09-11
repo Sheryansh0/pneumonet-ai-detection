@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "PneumoNet - AI-powered pneumonia detection system with stunning 3D futuristic UI",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@radix-ui/react-progress": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.5",

@@ -1,6 +1,31 @@
-# PneumoNet - AI Pneumonia Detection System
+# 🫁 PneumoNet Frontend - React Application
 
-A stunning 3D futuristic frontend for AI-powered pneumonia detection from chest X-rays. Built with React, featuring glass morphism effects, smooth animations, and a professional medical UI.
+<div align="center">
+  <img src="https://res.cloudinary.com/djfhbyk7a/image/upload/v1757540079/cropped_circle_image_mg7gem.png" alt="PneumoNet Logo" width="120" height="120">
+  
+  **Modern React frontend for AI-powered pneumonia detection**
+  
+  [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.3.0-blue.svg)](https://tailwindcss.com/)
+  [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black.svg)](https://vercel.com/)
+</div>
+
+## 🌟 Features
+
+### 🎨 **Modern UI/UX**
+
+- **Responsive Design** with Tailwind CSS
+- **3D Gradient Animations** for immersive experience
+- **Professional Medical Interface** with dark theme
+
+### 📊 **Advanced Functionality**
+
+- **File Upload** with drag-and-drop support
+- **Real-time Analysis** with progress indicators
+- **PDF Report Generation** with embedded images
+- **GradCAM Visualization** display
+
+A stunning 3D futuristic frontend for AI-powered pneumonia detection from chest X-rays.
 
 ## 🚀 Features
 

@@ -1,9 +1,9 @@
 // API Configuration
 const API_CONFIG = {
-  // Base URL - uses environment variable for production deployment
+  // Base URL - HTTPS Azure Container Apps endpoint (resolves Mixed Content Policy)
   BASE_URL:
     process.env.REACT_APP_API_URL ||
-    "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io:5000",
+    "https://pneumonia-detection-app.agreeablegrass-90b85d63.centralindia.azurecontainerapps.io",
 
   // API Endpoints
   ENDPOINTS: {

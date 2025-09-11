@@ -56,7 +56,7 @@ const HomePage = () => {
         <div className="mb-8 text-center transform hover:scale-105 transition-all duration-700">
           <div className="flex items-center justify-center mb-4">
             <div className="p-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-md border border-white/20">
-              <img 
+              <img
                 src="https://res.cloudinary.com/djfhbyk7a/image/upload/v1757540079/cropped_circle_image_mg7gem.png"
                 alt="PneumoNet Logo"
                 className="h-16 w-16 rounded-full object-cover ring-2 ring-cyan-400/30"

@@ -15,12 +15,26 @@ class PneumoniaAPI {
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
+        mode: "cors", // Explicitly set CORS mode
+        credentials: "omit", // Don't send credentials
+        headers: {
+          Accept: "application/json",
+          ...options.headers,
+        },
       });
 
       clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error(
+          "Response is not JSON - server may be down or misconfigured"
+        );
       }
 
       const data = await response.json();
@@ -32,14 +46,47 @@ class PneumoniaAPI {
         throw new Error("Request timeout - please try again");
       }
 
+      // Check if it's a CORS or network error
+      if (
+        error.message.includes("Failed to fetch") ||
+        error.message.includes("NetworkError") ||
+        error.message.includes("CORS")
+      ) {
+        throw new Error(
+          "Cannot connect to AI server - please check if the backend is running"
+        );
+      }
+
+      // Handle JSON parsing errors (HTML responses)
+      if (
+        error.message.includes("Unexpected token") ||
+        error.message.includes("not valid JSON") ||
+        error.message.includes("<!doctype")
+      ) {
+        throw new Error(
+          "Server returned HTML instead of JSON - proxy may be misconfigured"
+        );
+      }
+
       throw new Error(`API request failed: ${error.message}`);
     }
   }
 
-  // Health check endpoint
+  // Health check endpoint - now with HTTPS support!
   async checkHealth() {
     const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`;
-    return this.makeRequest(url);
+    console.log(`Checking health at HTTPS endpoint: ${url}`);
+    
+    try {
+      const result = await this.makeRequest(url);
+      if (result.success) {
+        console.log("✅ Health check successful via HTTPS!");
+        return result;
+      }
+    } catch (error) {
+      console.error("Health check failed:", error.message);
+      throw error;
+    }
   }
 
   // Home endpoint (API info)
@@ -78,7 +125,7 @@ class PneumoniaAPI {
     };
   }
 
-  // Main prediction endpoint
+  // Main prediction endpoint - now with HTTPS support!
   async predictPneumonia(file, options = {}) {
     // Validate file first
     const validation = this.validateFile(file);
@@ -87,7 +134,8 @@ class PneumoniaAPI {
     }
 
     const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.PREDICT}`;
-
+    console.log(`Making prediction request to HTTPS endpoint: ${url}`);
+    
     // Create FormData for file upload
     const formData = new FormData();
     formData.append("file", file);
@@ -97,12 +145,36 @@ class PneumoniaAPI {
       formData.append("disable_cam", "true");
     }
 
-    const requestOptions = {
-      method: "POST",
-      body: formData,
-    };
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+        mode: 'cors',
+        credentials: 'omit',
+        // Don't set Content-Type - let browser set it with boundary for FormData
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server error (${response.status}): ${errorText}`);
+      }
 
-    return this.makeRequest(url, requestOptions);
+      const data = await response.json();
+      console.log("✅ Prediction successful via HTTPS!");
+      return { success: true, data };
+      
+    } catch (error) {
+      console.error("Prediction failed:", error.message);
+      
+      // Provide specific error messages
+      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+        throw new Error(
+          "Unable to connect to AI server. Please check your internet connection or try again in a moment."
+        );
+      }
+      
+      throw new Error(`Prediction failed: ${error.message}`);
+    }
   }
 
   // Convert base64 image to blob for display
