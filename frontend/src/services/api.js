@@ -72,20 +72,36 @@ class PneumoniaAPI {
     }
   }
 
-  // Health check endpoint - now with HTTPS support!
+  // Health check endpoint - with Mixed Content Policy handling
   async checkHealth() {
-    const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`;
-    console.log(`Checking health at HTTPS endpoint: ${url}`);
-    
-    try {
-      const result = await this.makeRequest(url);
-      if (result.success) {
-        console.log("✅ Health check successful via HTTPS!");
-        return result;
+    // For production (Vercel), always use the proxy since we can't make HTTP requests from HTTPS
+    if (window.location.protocol === 'https:') {
+      try {
+        const proxyUrl = `/api/proxy?url=${encodeURIComponent(`${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`)}`;
+        console.log(`Checking health via Vercel proxy: ${proxyUrl}`);
+        const result = await this.makeRequest(proxyUrl);
+        if (result.success) {
+          console.log("✅ Health check successful via Vercel proxy!");
+          return result;
+        }
+      } catch (error) {
+        console.error("Vercel proxy health check failed:", error.message);
+        throw error;
       }
-    } catch (error) {
-      console.error("Health check failed:", error.message);
-      throw error;
+    } else {
+      // For development (localhost), try direct connection
+      const directUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`;
+      try {
+        console.log(`Checking health at: ${directUrl}`);
+        const result = await this.makeRequest(directUrl);
+        if (result.success) {
+          console.log("✅ Health check successful via direct connection!");
+          return result;
+        }
+      } catch (error) {
+        console.error("Direct health check failed:", error.message);
+        throw error;
+      }
     }
   }
 
@@ -125,7 +141,7 @@ class PneumoniaAPI {
     };
   }
 
-  // Main prediction endpoint - now with HTTPS support!
+  // Main prediction endpoint - with Mixed Content Policy handling
   async predictPneumonia(file, options = {}) {
     // Validate file first
     const validation = this.validateFile(file);
@@ -133,47 +149,72 @@ class PneumoniaAPI {
       throw new Error(validation.errors.join(", "));
     }
 
-    const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.PREDICT}`;
-    console.log(`Making prediction request to HTTPS endpoint: ${url}`);
-    
-    // Create FormData for file upload
-    const formData = new FormData();
-    formData.append("file", file);
+    // For production (Vercel), always use the proxy since we can't make HTTP requests from HTTPS
+    if (window.location.protocol === 'https:') {
+      try {
+        console.log("Making prediction via Vercel proxy...");
+        const proxyUrl = `/api/predict-proxy`;
 
-    // Add optional parameters
-    if (options.disableCam) {
-      formData.append("disable_cam", "true");
-    }
+        const response = await fetch(proxyUrl, {
+          method: "POST",
+          body: (() => {
+            const formData = new FormData();
+            formData.append("file", file);
+            if (options.disableCam) {
+              formData.append("disable_cam", "true");
+            }
+            return formData;
+          })(),
+          // Don't set Content-Type for FormData
+        });
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: formData,
-        mode: 'cors',
-        credentials: 'omit',
-        // Don't set Content-Type - let browser set it with boundary for FormData
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Server error (${response.status}): ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Proxy error (${response.status}): ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log("✅ Prediction successful via Vercel proxy!");
+        return { success: true, data };
+      } catch (error) {
+        console.error("Vercel proxy prediction failed:", error.message);
+        throw new Error(`Prediction failed: ${error.message}`);
+      }
+    } else {
+      // For development (localhost), use direct connection
+      const directUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.PREDICT}`;
+      console.log(`Making prediction request to: ${directUrl}`);
+
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // Add optional parameters
+      if (options.disableCam) {
+        formData.append("disable_cam", "true");
       }
 
-      const data = await response.json();
-      console.log("✅ Prediction successful via HTTPS!");
-      return { success: true, data };
-      
-    } catch (error) {
-      console.error("Prediction failed:", error.message);
-      
-      // Provide specific error messages
-      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-        throw new Error(
-          "Unable to connect to AI server. Please check your internet connection or try again in a moment."
-        );
+      try {
+        const response = await fetch(directUrl, {
+          method: "POST",
+          body: formData,
+          mode: "cors",
+          credentials: "omit",
+          // Don't set Content-Type - let browser set it with boundary for FormData
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error (${response.status}): ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log("✅ Prediction successful via direct connection!");
+        return { success: true, data };
+      } catch (error) {
+        console.error("Direct prediction failed:", error.message);
+        throw new Error(`Prediction failed: ${error.message}`);
       }
-      
-      throw new Error(`Prediction failed: ${error.message}`);
     }
   }
 
