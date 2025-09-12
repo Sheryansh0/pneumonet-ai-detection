@@ -16,15 +16,16 @@ export default async function handler(req, res) {
 
   try {
     const { url } = req.query;
-    
+
     if (!url) {
-      return res.status(400).json({ error: 'URL parameter is required' });
+      return res.status(400).json({ error: "URL parameter is required" });
     }
 
     // Validate that we're only proxying to our Container Instance
-    const allowedDomain = 'pneumonia-detection-sheryansh.centralindia.azurecontainer.io';
+    const allowedDomain =
+      "pneumonia-detection-sheryansh.centralindia.azurecontainer.io";
     if (!url.includes(allowedDomain)) {
-      return res.status(403).json({ error: 'Unauthorized domain' });
+      return res.status(403).json({ error: "Unauthorized domain" });
     }
 
     console.log(`Proxying request to: ${url}`);
@@ -33,8 +34,8 @@ export default async function handler(req, res) {
     const response = await fetch(url, {
       method: req.method,
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
@@ -43,7 +44,7 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    
+
     // Return the data
     res.status(200).json(data);
   } catch (error) {

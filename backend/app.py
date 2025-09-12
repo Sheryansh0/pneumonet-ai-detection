@@ -155,14 +155,31 @@ def health():
 def handle_prediction():
     req_id = uuid.uuid4().hex[:8]
     try:
-        if 'file' not in request.files:
-            return jsonify({"error": "No file part in the request"}), 400
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"error": "No file selected for uploading"}), 400
+        # Check if request contains base64 data (for CORS proxy compatibility)
+        if request.is_json and 'file_data' in request.json:
+            # Handle base64 encoded file data
+            file_data = request.json.get('file_data')
+            if not file_data:
+                return jsonify({"error": "No file_data provided in JSON request"}), 400
+            
+            try:
+                # Decode base64 to bytes
+                image_bytes = base64.b64decode(file_data)
+            except Exception as e:
+                return jsonify({"error": f"Invalid base64 data: {str(e)}"}), 400
+                
+            disable_cam_request = request.json.get('disable_cam', 'false') == 'true'
+            
+        else:
+            # Handle traditional file upload
+            if 'file' not in request.files:
+                return jsonify({"error": "No file part in the request"}), 400
+            file = request.files['file']
+            if file.filename == '':
+                return jsonify({"error": "No file selected for uploading"}), 400
 
-        image_bytes = file.read()
-        disable_cam_request = request.form.get('disable_cam', 'false').lower() == 'true'
+            image_bytes = file.read()
+            disable_cam_request = request.form.get('disable_cam', 'false').lower() == 'true'
         
         # --- Get the new risk_level from the predict function ---
         predicted_class, confidence, risk_level, gradcam_overlay = predict(image_bytes, disable_cam_request)
