@@ -1,9 +1,9 @@
 // API Configuration
 const API_CONFIG = {
-  // Base URL - Azure Container Instance (reliable and fast model loading)
+  // Base URL - Azure Container Instance deployment with HTTP (current active backend)
   BASE_URL:
     process.env.REACT_APP_API_URL ||
-    "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io:5000",
+    "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io",
 
   // API Endpoints
   ENDPOINTS: {

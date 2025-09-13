@@ -16,7 +16,10 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io:5000/$1",
+      "headers": {
+        "x-forwarded-host": "pneumonet-frontend.vercel.app"
+      }
     },
     {
       "src": "/static/(.*)",

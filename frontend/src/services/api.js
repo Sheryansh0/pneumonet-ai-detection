@@ -72,73 +72,19 @@ class PneumoniaAPI {
     }
   }
 
-  // Health check endpoint - with multiple fallback methods
+  // Health check endpoint - direct connection for HTTPS backend
   async checkHealth() {
-    // For production, use multiple fallback methods
-    if (window.location.protocol === "https:") {
-      const methods = [
-        // Method 1: Direct request (might work if server has CORS enabled)
-        async () => {
-          const directUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`;
-          console.log(`Trying health check method 1: ${directUrl}`);
-          return await this.makeRequest(directUrl);
-        },
-        // Method 2: CORS Anywhere proxy
-        async () => {
-          const corsProxy = "https://cors-anywhere.herokuapp.com/";
-          const targetUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`;
-          const proxyUrl = `${corsProxy}${targetUrl}`;
-          console.log(`Trying health check method 2: ${proxyUrl}`);
-          return await this.makeRequest(proxyUrl, {
-            headers: { "X-Requested-With": "XMLHttpRequest" },
-          });
-        },
-        // Method 3: AllOrigins proxy
-        async () => {
-          const targetUrl = encodeURIComponent(
-            `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`
-          );
-          const proxyUrl = `https://api.allorigins.win/get?url=${targetUrl}`;
-          console.log(`Trying health check method 3: ${proxyUrl}`);
-          const response = await fetch(proxyUrl, { mode: "cors" });
-          if (!response.ok)
-            throw new Error(`HTTP error! status: ${response.status}`);
-          const data = await response.json();
-          return { success: true, data: JSON.parse(data.contents) };
-        },
-      ];
-
-      for (let i = 0; i < methods.length; i++) {
-        try {
-          console.log(`Trying health check method ${i + 1}`);
-          const result = await methods[i]();
-          if (result.success) {
-            console.log(`✅ Health check successful via method ${i + 1}!`);
-            return result;
-          }
-        } catch (error) {
-          console.log(`Health check method ${i + 1} failed:`, error.message);
-          if (i === methods.length - 1) {
-            throw new Error(
-              `All health check methods failed. Last error: ${error.message}`
-            );
-          }
-        }
+    const directUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`;
+    try {
+      console.log(`Checking health at: ${directUrl}`);
+      const result = await this.makeRequest(directUrl);
+      if (result.success) {
+        console.log("✅ Health check successful via direct connection!");
+        return result;
       }
-    } else {
-      // For development (localhost), use direct connection
-      const directUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.HEALTH}`;
-      try {
-        console.log(`Checking health at: ${directUrl}`);
-        const result = await this.makeRequest(directUrl);
-        if (result.success) {
-          console.log("✅ Health check successful via direct connection!");
-          return result;
-        }
-      } catch (error) {
-        console.error("Direct health check failed:", error.message);
-        throw error;
-      }
+    } catch (error) {
+      console.error("Health check failed:", error.message);
+      throw error;
     }
   }
 
@@ -178,7 +124,7 @@ class PneumoniaAPI {
     };
   }
 
-  // Main prediction endpoint - with base64 AllOrigins proxy (working method)
+  // Main prediction endpoint - direct connection for HTTPS backend
   async predictPneumonia(file, options = {}) {
     // Validate file first
     const validation = this.validateFile(file);
@@ -186,107 +132,38 @@ class PneumoniaAPI {
       throw new Error(validation.errors.join(", "));
     }
 
-    // For production (HTTPS), use AllOrigins proxy with base64 encoding
-    if (window.location.protocol === "https:") {
-      try {
-        console.log("Making prediction via AllOrigins proxy with base64...");
+    const directUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.PREDICT}`;
+    console.log(`Making prediction request to: ${directUrl}`);
 
-        // Convert file to base64
-        const base64Data = await this.fileToBase64(file);
-        
-        // Create the payload for backend
-        const payload = {
-          file_data: base64Data
-        };
-        
-        if (options.disableCam) {
-          payload.disable_cam = "true";
-        }
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append("file", file);
 
-        // Use AllOrigins to make a POST request with base64 data
-        const targetUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.PREDICT}`;
-        
-        // Create a custom proxy request using AllOrigins
-        const proxyRequestData = {
-          url: targetUrl,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        };
+    // Add optional parameters
+    if (options.disableCam) {
+      formData.append("disable_cam", "true");
+    }
 
-        const response = await fetch("https://api.allorigins.win/get", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(proxyRequestData)
-        });
+    try {
+      const response = await fetch(directUrl, {
+        method: "POST",
+        body: formData,
+        mode: "cors",
+        credentials: "omit",
+        // Don't set Content-Type - let browser set it with boundary for FormData
+      });
 
-        if (!response.ok) {
-          throw new Error(`AllOrigins response error: ${response.status}`);
-        }
-
-        const proxyResult = await response.json();
-        
-        if (!proxyResult.contents) {
-          throw new Error("AllOrigins returned empty response");
-        }
-
-        const data = JSON.parse(proxyResult.contents);
-        console.log("✅ Prediction successful via AllOrigins proxy!");
-        return { success: true, data };
-        
-      } catch (allOriginsError) {
-        console.error("AllOrigins proxy prediction failed:", allOriginsError.message);
-        
-        // Try one more fallback method - basic AllOrigins GET with query params
-        try {
-          console.log("Trying simplified AllOrigins approach...");
-          
-          // For now, show a helpful message to the user
-          throw new Error("File upload is currently unavailable due to browser security restrictions. The AI server is online, but file processing requires additional setup.");
-          
-        } catch (fallbackError) {
-          throw new Error(`File upload failed: ${allOriginsError.message}`);
-        }
-      }
-    } else {
-      // For development (localhost), use direct connection
-      const directUrl = `${this.baseURL}${API_CONFIG.ENDPOINTS.PREDICT}`;
-      console.log(`Making prediction request to: ${directUrl}`);
-
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append("file", file);
-
-      // Add optional parameters
-      if (options.disableCam) {
-        formData.append("disable_cam", "true");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server error (${response.status}): ${errorText}`);
       }
 
-      try {
-        const response = await fetch(directUrl, {
-          method: "POST",
-          body: formData,
-          mode: "cors",
-          credentials: "omit",
-          // Don't set Content-Type - let browser set it with boundary for FormData
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Server error (${response.status}): ${errorText}`);
-        }
-
-        const data = await response.json();
-        console.log("✅ Prediction successful via direct connection!");
-        return { success: true, data };
-      } catch (error) {
-        console.error("Direct prediction failed:", error.message);
-        throw new Error(`Prediction failed: ${error.message}`);
-      }
+      const data = await response.json();
+      console.log("✅ Prediction successful via direct connection!");
+      return { success: true, data };
+    } catch (error) {
+      console.error("Prediction failed:", error.message);
+      throw new Error(`Prediction failed: ${error.message}`);
     }
   }
 
@@ -295,7 +172,7 @@ class PneumoniaAPI {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        const base64 = reader.result.split(',')[1]; // Remove data:image/jpeg;base64, prefix
+        const base64 = reader.result.split(",")[1]; // Remove data:image/jpeg;base64, prefix
         resolve(base64);
       };
       reader.onerror = reject;

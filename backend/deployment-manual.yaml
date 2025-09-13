@@ -1,0 +1,35 @@
+apiVersion: 2021-07-01
+location: centralindia
+name: pneumonia-https-manual
+properties:
+  containers:
+  - name: pneumonia-app
+    properties:
+      image: pneumoniadetectionacr.azurecr.io/pneumonia-combined:latest
+      resources:
+        requests:
+          cpu: 2
+          memoryInGb: 4
+      environmentVariables:
+      - name: DISABLE_CAM
+        value: '0'
+      - name: PORT
+        value: '5000'
+      - name: PYTHONUNBUFFERED
+        value: '1'
+      ports:
+      - port: 80
+        protocol: TCP
+  imageRegistryCredentials:
+  - server: pneumoniadetectionacr.azurecr.io
+    username: pneumoniadetectionacr
+    password: NNocY5pOb2qIcvX8B5S3yzgIBVgpzThVrInsPXqg7h+ACRBwYj1R
+  ipAddress:
+    type: Public
+    dnsNameLabel: pneumonia-detection-sheryansh
+    ports:
+    - protocol: TCP
+      port: 80
+  osType: Linux
+  restartPolicy: Always
+tags: {}
