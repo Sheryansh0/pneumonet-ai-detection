@@ -1,9 +1,10 @@
 // API Configuration
 const API_CONFIG = {
   // Base URL - Azure Container Instance deployment with HTTP (current active backend)
+  // New DNS working properly
   BASE_URL:
     process.env.REACT_APP_API_URL ||
-    "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io",
+    "http://pneumonia-api-live-2025.centralindia.azurecontainer.io",
 
   // API Endpoints
   ENDPOINTS: {
