@@ -1,16 +1,19 @@
 // API Configuration
 const API_CONFIG = {
-  // Base URL - Azure Container Instance deployment with HTTP (current active backend)
-  // New DNS working properly
+  // Base URL - Use Vercel proxy in production to avoid mixed content issues
+  // Local development still uses direct Azure backend
   BASE_URL:
-    process.env.REACT_APP_API_URL ||
-    "http://pneumonia-api-live-2025.centralindia.azurecontainer.io",
+    process.env.NODE_ENV === "production"
+      ? "" // Use relative URLs for Vercel proxy
+      : process.env.REACT_APP_API_URL ||
+        "http://pneumonia-api-live-2025.centralindia.azurecontainer.io",
 
-  // API Endpoints
+  // API Endpoints - will be proxied through Vercel in production
   ENDPOINTS: {
-    HEALTH: "/health",
-    HOME: "/",
-    PREDICT: "/predict",
+    HEALTH: process.env.NODE_ENV === "production" ? "/api/health" : "/health",
+    HOME: process.env.NODE_ENV === "production" ? "/api/" : "/",
+    PREDICT:
+      process.env.NODE_ENV === "production" ? "/api/predict" : "/predict",
   },
 
   // Request timeout (in milliseconds)

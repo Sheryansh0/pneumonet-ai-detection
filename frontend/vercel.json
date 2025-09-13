@@ -4,52 +4,17 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    },
-    {
-      "src": "api/*.js",
-      "use": "@vercel/node"
+      "config": { "distDir": "build" }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "http://pneumonia-detection-sheryansh.centralindia.azurecontainer.io:5000/$1",
-      "headers": {
-        "x-forwarded-host": "pneumonet-frontend.vercel.app"
-      }
+      "source": "/api/:path*",
+      "destination": "http://pneumonia-api-live-2025.centralindia.azurecontainer.io/:path*"
     },
     {
-      "src": "/static/(.*)",
-      "headers": {
-        "cache-control": "s-maxage=31536000,immutable"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "api/health.js": {
-      "runtime": "@vercel/node@3"
-    },
-    "api/predict.js": {
-      "runtime": "@vercel/node@3"
-    },
-    "api/predict-proxy.js": {
-      "runtime": "@vercel/node@3"
-    },
-    "api/proxy.js": {
-      "runtime": "@vercel/node@3"
-    },
-    "api/test.js": {
-      "runtime": "@vercel/node@3"
-    },
-    "api/hello.js": {
-      "runtime": "@vercel/node@3"
-    }
-  }
+  ]
 }
