@@ -25,9 +25,7 @@
 
 ## 🎬 **Live System Demo**
 
-### 📹 **2-Minute Production Demo**
-
-https://github.com/user-attachments/assets/your-video-id-here
+### 📹 **Project Demo**
 
 <!-- Uploading "Screen Recording 2025-09-14 151152.mp4.mp4"... -->
 
