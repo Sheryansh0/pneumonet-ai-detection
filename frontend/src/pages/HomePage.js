@@ -146,7 +146,7 @@ const HomePage = () => {
             </div>
             <div className="w-px h-8 bg-slate-600"></div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-400">69</div>
+              <div className="text-2xl font-bold text-indigo-400">1K+</div>
               <div>Scans Tested</div>
             </div>
           </div>

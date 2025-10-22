@@ -5,7 +5,7 @@ properties:
   containers:
     - name: pneumonia-app
       properties:
-        image: pneumoniadetectionacr.azurecr.io/pneumonia-combined:latest
+        image: sheryansh/pneumonia-detection:latest
         resources:
           requests:
             cpu: 2
@@ -28,9 +28,5 @@ properties:
     ports:
       - protocol: TCP
         port: 80
-  imageRegistryCredentials:
-    - server: pneumoniadetectionacr.azurecr.io
-      username: pneumoniadetectionacr
-      password: NNocY5pOb2qIcvX8B5S3yzgIBVgpzThVrInsPXqg7h+ACRBwYj1R
 tags: {}
 type: Microsoft.ContainerInstance/containerGroups

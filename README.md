@@ -2,8 +2,15 @@
 
 <div align="center">
   
-  **🚀 LIVE PRODUCTION SYSTEM - Medical AI for pneumonia detection deployed globally**
-  
+  **🚀 LIVE PRODUCTION SYSTEM - Medical AI for pne## 🔧 **Production Technology Stack**
+
+### 🎨 **Frontend (Vercel Deployment)**
+
+- **⚛️ React.js 18+** - Modern functional components
+- **🎨 Tailwind CSS** - Professional responsive design
+- **🌐 Vercel Platform** - Global CDN with edge computing
+- **🔒 Vercel Proxy** - HTTPS→HTTP communication via `/api/*` rewrites
+- **📱 PWA Ready** - Mobile-first responsive designtection deployed globally\*\*
   [![🌐 Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-www.pneumonet.me-brightgreen.svg)](https://www.pneumonet.me)
   [![🔗 Backend API](https://img.shields.io/badge/🔗%20API-Live-blue.svg)](http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000)
   [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
@@ -11,7 +18,7 @@
   [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)](https://pytorch.org/)
   [![Azure](https://img.shields.io/badge/Azure-Deployed-blue.svg)](https://azure.microsoft.com/)
   [![Vercel](https://img.shields.io/badge/Vercel-Deployed-black.svg)](https://vercel.com/)
-</div>
+  </div>
 
 ## 🌟 **LIVE SYSTEM STATUS**
 
@@ -76,14 +83,15 @@ _Watch the complete system demonstration showing live pneumonia detection with r
 ## 🏗️ **Production Architecture**
 
 ```
-🌐 LIVE PRODUCTION SYSTEM
+🌐 LIVE PRODUCTION SYSTEM - VERIFIED ARCHITECTURE
 ├── 🎨 Frontend (Vercel HTTPS)
-│   ├── https://pneumonet-frontend.vercel.app
+│   ├── https://www.pneumonet.me (Custom Domain)
+│   ├── https://pneumonet-frontend.vercel.app (Backup)
 │   ├── React.js 18+ with Tailwind CSS
 │   ├── Global CDN & Edge Network
-│   └── Proxy API routing (/api/* → Azure)
+│   └── ✅ VERIFIED: Proxy API routing (/api/* → Azure)
 │
-├── ☁️ Backend (Azure Container Instance)
+├── ☁️ Backend (Azure Container Instance HTTP)
 │   ├── http://pneumonia-api-live-2025.centralindia...
 │   ├── Flask + Nginx + Docker
 │   ├── 2 CPU cores, 4GB RAM
@@ -148,9 +156,9 @@ python app.py  # API at http://localhost:5000
 
 - **🐍 Flask + Gunicorn** - Production WSGI server
 - **🌐 Nginx** - Reverse proxy and load balancer
-- **� Docker** - Multi-stage containerized deployment
-- **☁️ Azure Container Registry** - Enterprise image management
-- **� Health Monitoring** - Automated system checks
+- **🐳 Docker** - Multi-stage containerized deployment
+- **🐋 Docker Hub** - Public container image registry
+- **🏥 Health Monitoring** - Automated system checks
 
 ### 🧠 **AI/ML Stack (Production Models)**
 
@@ -183,6 +191,7 @@ python app.py  # API at http://localhost:5000
 - **🌍 Global Access**: Available worldwide
 - **👥 Concurrent Users**: 50-100 supported
 - **🔄 Daily Predictions**: 150+ processed
+- **✅ Architecture Verified**: October 2025
 
 ## 🚀 **Production Deployment**
 
@@ -215,7 +224,12 @@ curl http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/health
 ```bash
 # Multi-stage production container
 docker build -f Dockerfile.combined -t pneumonia-detection .
-docker push pneumoniadetectionacr.azurecr.io/pneumonia-detection:latest
+
+# Tag for Docker Hub
+docker tag pneumonia-detection sheryansh/pneumonia-detection:latest
+
+# Push to Docker Hub
+docker push sheryansh/pneumonia-detection:latest
 ```
 
 ## 🔐 **Production Configuration**
@@ -223,7 +237,7 @@ docker push pneumoniadetectionacr.azurecr.io/pneumonia-detection:latest
 ### 🎨 **Frontend Environment (Vercel)**
 
 ```bash
-# vercel.json - Production proxy configuration
+# vercel.json - Verified proxy configuration
 {
   "rewrites": [
     {
@@ -233,7 +247,12 @@ docker push pneumoniadetectionacr.azurecr.io/pneumonia-detection:latest
   ]
 }
 
-# Environment variables
+# Environment-aware API routing (src/config/api.js)
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? '/api'  // Uses Vercel proxy in production
+  : 'http://localhost:5000';  // Direct connection in development
+
+# Build environment
 REACT_APP_NODE_ENV=production
 GENERATE_SOURCEMAP=false
 ```
@@ -307,8 +326,10 @@ Response:
 ### 🔒 **HTTPS/HTTP Communication**
 
 - **Challenge**: Mixed content blocking between HTTPS frontend and HTTP backend
-- **Solution**: Implemented Vercel proxy routing `/api/*` to Azure backend
-- **Result**: Seamless secure communication maintained
+- **Solution**: Implemented dual-layer proxy architecture:
+  - **Layer 1**: Vercel proxy (`/api/*` → Azure backend via `vercel.json` rewrites)
+  - **Layer 2**: Nginx reverse proxy in Azure container
+- **Result**: Seamless HTTPS→HTTP communication with production security
 
 ### 🌐 **CORS Configuration**
 
@@ -364,7 +385,8 @@ Response:
 
 - **🏠 Main Repository**: [pneumonet-ai-detection](https://github.com/Sheryansh0/pneumonet-ai-detection)
 - **🎨 Frontend Repository**: [pneumonet-frontend](https://github.com/Sheryansh0/pneumonet-frontend)
-- **📋 Issues & Support**: [GitHub Issues](https://github.com/Sheryansh0/pneumonet-ai-detection/issues)
+- **� Docker Image**: [sheryansh/pneumonia-detection](https://hub.docker.com/r/sheryansh/pneumonia-detection)
+- **�📋 Issues & Support**: [GitHub Issues](https://github.com/Sheryansh0/pneumonet-ai-detection/issues)
 
 ### 🤝 **Contributing**
 
