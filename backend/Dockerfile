@@ -1,10 +1,12 @@
-# Use Python 3.11 slim for smaller image size
+# Multi-stage build for combined Flask + Nginx container
 FROM python:3.11-slim
 
-# Install only essential system dependencies
+# Install system dependencies for Flask and Nginx
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
+    curl \
+    nginx \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -24,18 +26,29 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY app.py explain.py ./
 COPY *.pth ./
 
+# Copy Nginx configuration
+COPY nginx-azure/nginx.conf /etc/nginx/nginx.conf
+
+# Copy startup script
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+
+# Create nginx directories and set permissions
+RUN mkdir -p /var/log/nginx /var/lib/nginx /var/cache/nginx /run/nginx && \
+    chown -R www-data:www-data /var/log/nginx /var/lib/nginx /var/cache/nginx /run/nginx
+
+# Create non-root user for Flask app
+RUN useradd --create-home --shell /bin/bash app && \
+    chown -R app:app /app
+
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     DISABLE_CAM=0 \
     PORT=5000 \
     PYTHONDONTWRITEBYTECODE=1
 
-# Create non-root user for security
-RUN useradd --create-home --shell /bin/bash app && \
-    chown -R app:app /app
-USER app
+# Expose port 80 (Nginx)
+EXPOSE 80
 
-EXPOSE 5000
-
-# Direct command without shell wrapper for better signal handling
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "2", "--timeout", "300", "app:app"]
+# Use startup script to run both Flask and Nginx
+CMD ["/startup.sh"]

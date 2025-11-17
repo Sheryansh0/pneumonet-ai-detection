@@ -172,7 +172,7 @@ http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/
 │   ├── 🐍 app.py                   # Flask application
 │   ├── 🧠 convnext_pneumonia.pth   # Trained ConvNeXt model
 │   ├── 🧠 efficientnet_pneumonia.pth # Trained EfficientNet model
-│   ├── 🐳 Dockerfile.combined      # Production container
+│   ├── 🐳 Dockerfile               # Production container
 │   ├── ⚙️ deployment-new-dns.yaml # Azure deployment config
 │   ├── 📋 requirements.txt         # Python dependencies
 │   └── 📁 nginx-azure/            # Nginx configuration
@@ -382,7 +382,7 @@ def load_models():
 #### Multi-Stage Docker Build
 
 ```dockerfile
-# Production Dockerfile.combined
+# Production Dockerfile
 FROM python:3.11-slim as python-base
 WORKDIR /app
 COPY requirements.txt .
@@ -454,7 +454,7 @@ properties:
 
 ```powershell
 # Build and push to Docker Hub
-docker build -f Dockerfile.combined -t pneumonia-detection .
+docker build -t pneumonia-detection .
 docker tag pneumonia-detection sheryansh/pneumonia-detection:latest
 docker push sheryansh/pneumonia-detection:latest
 
@@ -734,7 +734,7 @@ avg_probs = (CONVNEXT_WEIGHT * probs1) + (EFFICIENTNET_WEIGHT * probs2)
 
 ```bash
 # Automated deployment workflow
-docker build -f Dockerfile.combined -t pneumonia-detection .
+docker build -t pneumonia-detection .
 docker tag pneumonia-detection sheryansh/pneumonia-detection:latest
 docker push sheryansh/pneumonia-detection:latest
 az container create --resource-group pneumonia-detection-rg --file deployment-new-dns.yaml

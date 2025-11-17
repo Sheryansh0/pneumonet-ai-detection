@@ -10,7 +10,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://pneumonia-api-live-2025.centralindia.azurecontainer.io/:path*"
+      "destination": "https://pneumonet-api-926412293290.us-central1.run.app/:path*"
     },
     {
       "source": "/(.*)",

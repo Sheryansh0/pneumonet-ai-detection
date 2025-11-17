@@ -1,12 +1,12 @@
 // API Configuration
 const API_CONFIG = {
   // Base URL - Use Vercel proxy in production to avoid mixed content issues
-  // Local development still uses direct Azure backend
+  // Local development now uses Cloud Run backend
   BASE_URL:
     process.env.NODE_ENV === "production"
       ? "" // Use relative URLs for Vercel proxy
       : process.env.REACT_APP_API_URL ||
-        "http://pneumonia-api-live-2025.centralindia.azurecontainer.io",
+        "https://pneumonet-api-926412293290.us-central1.run.app",
 
   // API Endpoints - will be proxied through Vercel in production
   ENDPOINTS: {

@@ -12,23 +12,23 @@
 - **🔒 Vercel Proxy** - HTTPS→HTTP communication via `/api/*` rewrites
 - **📱 PWA Ready** - Mobile-first responsive designtection deployed globally\*\*
   [![🌐 Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-www.pneumonet.me-brightgreen.svg)](https://www.pneumonet.me)
-  [![🔗 Backend API](https://img.shields.io/badge/🔗%20API-Live-blue.svg)](http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000)
+  [![🔗 Backend API](https://img.shields.io/badge/🔗%20API-Live-blue.svg)](https://pneumonet-api-926412293290.us-central1.run.app)
   [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
   [![Python](https://img.shields.io/badge/Python-3.11-green.svg)](https://python.org/)
   [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)](https://pytorch.org/)
-  [![Azure](https://img.shields.io/badge/Azure-Deployed-blue.svg)](https://azure.microsoft.com/)
+  [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Run-4285F4.svg)](https://cloud.google.com/run)
   [![Vercel](https://img.shields.io/badge/Vercel-Deployed-black.svg)](https://vercel.com/)
   </div>
 
 ## 🌟 **LIVE SYSTEM STATUS**
 
-| Component            | Status        | URL                                                                                            | Performance    |
-| -------------------- | ------------- | ---------------------------------------------------------------------------------------------- | -------------- |
-| 🎨 Frontend          | 🟢 **LIVE**   | [www.pneumonet.me](https://www.pneumonet.me)                                                   | 99.9% uptime   |
-| 🎨 Frontend (Backup) | 🟢 **LIVE**   | [pneumonet-frontend.vercel.app](https://pneumonet-frontend.vercel.app)                         | Global CDN     |
-| 🧠 Backend API       | 🟢 **LIVE**   | [Azure Container Instance](http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000) | <2s response   |
-| 📱 GitHub Main       | 🟢 **ACTIVE** | [pneumonet-ai-detection](https://github.com/Sheryansh0/pneumonet-ai-detection)                 | Clean codebase |
-| 📱 GitHub Frontend   | 🟢 **ACTIVE** | [pneumonet-frontend](https://github.com/Sheryansh0/pneumonet-frontend)                         | Responsive UI  |
+| Component            | Status        | URL                                                                            | Performance    |
+| -------------------- | ------------- | ------------------------------------------------------------------------------ | -------------- |
+| 🎨 Frontend          | 🟢 **LIVE**   | [www.pneumonet.me](https://www.pneumonet.me)                                   | 99.9% uptime   |
+| 🎨 Frontend (Backup) | 🟢 **LIVE**   | [pneumonet-frontend.vercel.app](https://pneumonet-frontend.vercel.app)         | Global CDN     |
+| 🧠 Backend API       | 🟢 **LIVE**   | [Google Cloud Run](https://pneumonet-api-926412293290.us-central1.run.app)     | <2s response   |
+| 📱 GitHub Main       | 🟢 **ACTIVE** | [pneumonet-ai-detection](https://github.com/Sheryansh0/pneumonet-ai-detection) | Clean codebase |
+| 📱 GitHub Frontend   | 🟢 **ACTIVE** | [pneumonet-frontend](https://github.com/Sheryansh0/pneumonet-frontend)         | Responsive UI  |
 
 ## 🎬 **Live System Demo**
 
@@ -58,13 +58,13 @@ _Watch the complete system demonstration showing live pneumonia detection with r
 - **⏱️ <2s Processing Time** for instant medical insights
 - **🏥 Three-Class Detection**: Bacterial, Viral, Normal
 
-### � **Production Deployment**
+## 🏗️ **Production Deployment**
 
-- **☁️ Azure Container Instances**: Professional containerized backend
+- **☁️ Google Cloud Run**: Serverless containerized backend on Always Free tier
 - **🚀 Vercel Edge Network**: Global CDN with HTTPS
-- **🔒 Production Security**: CORS-enabled, HTTPS frontend
+- **🔒 Production Security**: HTTPS end-to-end, CORS-enabled
 - **📊 Live Monitoring**: Health checks and performance metrics
-- **🌍 Global Accessibility**: Available 24/7 worldwide
+- **🌍 Global Accessibility**: Available 24/7 worldwide with zero idle cost
 
 ### 🎨 **Professional Interface**
 
@@ -89,13 +89,13 @@ _Watch the complete system demonstration showing live pneumonia detection with r
 │   ├── https://pneumonet-frontend.vercel.app (Backup)
 │   ├── React.js 18+ with Tailwind CSS
 │   ├── Global CDN & Edge Network
-│   └── ✅ VERIFIED: Proxy API routing (/api/* → Azure)
+│   └── ✅ VERIFIED: Proxy API routing (/api/* → Cloud Run)
 │
-├── ☁️ Backend (Azure Container Instance HTTP)
-│   ├── http://pneumonia-api-live-2025.centralindia...
+├── ☁️ Backend (Google Cloud Run HTTPS - Free Tier)
+│   ├── https://pneumonet-api-926412293290.us-central1.run.app
 │   ├── Flask + Nginx + Docker
-│   ├── 2 CPU cores, 4GB RAM
-│   └── Auto-restart & health monitoring
+│   ├── 2 vCPU, 2GB RAM (scales to zero when idle)
+│   └── Auto-scaling & health monitoring
 │
 ├── 🧠 AI Engine (Production Models)
 │   ├── ConvNeXt-Tiny (40% ensemble weight)
@@ -120,8 +120,8 @@ https://www.pneumonet.me
 # Frontend (Backup) - Vercel Domain
 https://pneumonet-frontend.vercel.app
 
-# Backend API (HTTP) - For developers
-curl http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/health
+# Backend API (HTTPS) - Google Cloud Run Free Tier
+curl https://pneumonet-api-926412293290.us-central1.run.app/health
 ```
 
 ### 💻 **Local Development Setup**
@@ -152,12 +152,13 @@ python app.py  # API at http://localhost:5000
 - **� HTTPS Proxy** - Secure API communication
 - **📱 PWA Ready** - Mobile-first responsive design
 
-### ☁️ **Backend (Azure Container Instance)**
+### ☁️ **Backend (Google Cloud Run - Free Tier)**
 
 - **🐍 Flask + Gunicorn** - Production WSGI server
 - **🌐 Nginx** - Reverse proxy and load balancer
 - **🐳 Docker** - Multi-stage containerized deployment
 - **🐋 Docker Hub** - Public container image registry
+- **☁️ Cloud Run** - Serverless container platform with Always Free tier
 - **🏥 Health Monitoring** - Automated system checks
 
 ### 🧠 **AI/ML Stack (Production Models)**
@@ -170,10 +171,11 @@ python app.py  # API at http://localhost:5000
 
 ### 🏗️ **DevOps & Infrastructure**
 
-- **🌍 Multi-cloud Strategy** - Azure (backend) + Vercel (frontend)
-- **🔄 CI/CD Pipeline** - Automated deployment workflow
-- **📈 Production Monitoring** - Real-time performance metrics
-- **🛡️ Security Hardening** - CORS, HTTPS, input validation
+- **🌍 Multi-cloud Strategy** - Google Cloud Run (serverless backend) + Vercel (edge frontend)
+- **🔄 CI/CD Pipeline** - Automated deployment via Docker Hub → Cloud Run
+- **📈 Production Monitoring** - Real-time performance metrics & health checks
+- **🛡️ Security Hardening** - HTTPS end-to-end, CORS, input validation
+- **💰 Cost Optimization** - Always Free tier with zero idle cost (min-instances=0)
 
 ## 📊 **Production Performance Metrics**
 
@@ -206,24 +208,29 @@ vercel --prod
 vercel domains add pneumonet.yourdomain.com
 ```
 
-### ☁️ **Backend (Azure Container Instance - HTTP)**
+### ☁️ **Backend (Google Cloud Run - HTTPS Free Tier)**
 
 ```bash
-# Production deployment to Azure
-az container create \
-  --resource-group pneumonia-detection-rg \
-  --file deployment-new-dns.yaml \
-  --name pneumonia-api-live-2025
+# Production deployment to Cloud Run
+gcloud run deploy pneumonet-api \
+  --image=docker.io/sheryansh/pneumonia-detection:latest \
+  --platform=managed \
+  --region=us-central1 \
+  --allow-unauthenticated \
+  --memory=2Gi \
+  --cpu=2 \
+  --min-instances=0 \
+  --max-instances=2
 
 # Health check
-curl http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/health
+curl https://pneumonet-api-926412293290.us-central1.run.app/health
 ```
 
 ### 🐳 **Docker Production Build**
 
 ```bash
 # Multi-stage production container
-docker build -f Dockerfile.combined -t pneumonia-detection .
+docker build -t pneumonia-detection .
 
 # Tag for Docker Hub
 docker tag pneumonia-detection sheryansh/pneumonia-detection:latest
@@ -257,15 +264,14 @@ REACT_APP_NODE_ENV=production
 GENERATE_SOURCEMAP=false
 ```
 
-### ☁️ **Backend Environment (Azure)**
+### ☁️ **Backend Environment (Cloud Run)**
 
 ```bash
-# Environment variables in container
-FLASK_ENV=production
-DEVICE=cpu
+# Environment variables in Cloud Run container
 DISABLE_CAM=0
-PORT=5000
+DEVICE=cpu
 PYTHONUNBUFFERED=1
+PORT=8080  # Auto-set by Cloud Run
 ```
 
 ## � **Live API Documentation**
@@ -273,21 +279,18 @@ PYTHONUNBUFFERED=1
 ### 🔍 **Health Check Endpoint**
 
 ```bash
-GET http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/health
+GET https://pneumonet-api-926412293290.us-central1.run.app/health
 
 Response:
 {
-  "status": "healthy",
-  "models_loaded": true,
-  "timestamp": "2025-09-14T10:30:00Z",
-  "version": "1.0.0"
+  "status": "ok"
 }
 ```
 
 ### 🧠 **Prediction Endpoint**
 
 ```bash
-POST http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/predict
+POST https://pneumonet-api-926412293290.us-central1.run.app/predict
 Content-Type: multipart/form-data
 
 Body: {
@@ -307,16 +310,15 @@ Response:
 ### 🏠 **API Information**
 
 ```bash
-GET http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/
+GET https://pneumonet-api-926412293290.us-central1.run.app/
 
 Response:
 {
-  "message": "PneumoNet AI - Production Medical Diagnostic API",
+  "message": "Pneumonia Detection API",
   "status": "running",
   "endpoints": {
-    "/health": "System health check",
-    "/predict": "Pneumonia prediction with Grad-CAM",
-    "/": "API information"
+    "/health": "GET - Health check",
+    "/predict": "POST - Predict pneumonia from X-ray image"
   }
 }
 ```
