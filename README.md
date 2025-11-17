@@ -2,7 +2,7 @@
 
 <div align="center">
   
-  **🚀 LIVE PRODUCTION SYSTEM - Medical AI for pne## 🔧 **Production Technology Stack**
+  **🚀 LIVE PRODUCTION SYSTEM - Medical AI for pneumonia 🔧 **Production Technology Stack**
 
 ### 🎨 **Frontend (Vercel Deployment)**
 
