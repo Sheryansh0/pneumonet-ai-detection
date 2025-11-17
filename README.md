@@ -32,9 +32,7 @@
 
 ## 🎬 **Live System Demo**
 
-### 📹 **2-Minute Production Demo**
-
-https://github.com/user-attachments/assets/your-video-id-here
+### 📹 **5-Minute Production Demo**
 
 https://github.com/user-attachments/assets/8fcec46f-808e-44bb-9208-2aeccc061115
 
