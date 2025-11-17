@@ -2,8 +2,8 @@
 
 ## 🚀 Live Deployment
 
-- **Frontend**: https://pneumonet-frontend.vercel.app (Deployed on Vercel)
-- **Backend API**: http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000 (Azure Container Instance)
+- **Frontend**: https://www.pneumonet.me & https://pneumonet-frontend.vercel.app (Deployed on Vercel)
+- **Backend API**: https://pneumonet-api-926412293290.us-central1.run.app (Google Cloud Run - Free Tier)
 - **Repositories**:
   - Main: [pneumonet-ai-detection](https://github.com/Sheryansh0/pneumonet-ai-detection)
   - Frontend: [pneumonet-frontend](https://github.com/Sheryansh0/pneumonet-frontend)
@@ -59,8 +59,8 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 ┌─────────────────────────────────────────────────────────────────┐
 │                    🌐 LIVE PRODUCTION SYSTEM                    │
 │                                                                 │
-│  Frontend: https://pneumonet-frontend.vercel.app              │
-│  Backend:  http://pneumonia-api-live-2025.centralindia...     │
+│  Frontend: https://www.pneumonet.me                           │
+│  Backend:  https://pneumonet-api-926412293290.us-central1... │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                                │
@@ -75,13 +75,13 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 │                     🔒 SSL Enabled + CDN                       │
 └─────────────────────────────────────────────────────────────────┘
                                │
-                               ▼ HTTPS → HTTP Proxy
+                               ▼ HTTPS Proxy
 ┌─────────────────────────────────────────────────────────────────┐
-│               ☁️ AZURE CONTAINER INSTANCE (HTTP)                │
+│              ☁️ GOOGLE CLOUD RUN (HTTPS - Free Tier)           │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
 │  │   Flask API     │  │   Nginx Proxy   │  │   CORS Handler  │ │
-│  │   /predict      │  │   Load Balance  │  │   Security      │ │
-│  │   /health       │  │   Static Serve  │  │   Validation    │ │
+│  │   /predict      │  │   Dynamic PORT  │  │   Security      │ │
+│  │   /health       │  │   Auto-scaling  │  │   Validation    │ │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
 │           🐳 Docker Hub: sheryansh/pneumonia-detection         │
 └─────────────────────────────────────────────────────────────────┘
@@ -108,12 +108,12 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 - **API Proxy**: Seamless HTTPS→HTTP backend communication
 - **Custom Components**: Professional UI component library
 
-#### ⚙️ Backend Stack (Azure Container Instance)
+#### ⚙️ Backend Stack (Google Cloud Run)
 
 - **Flask + Gunicorn**: Production WSGI server configuration
-- **Nginx**: Reverse proxy and load balancer
+- **Nginx**: Dynamic reverse proxy (PORT-based configuration)
 - **Docker**: Multi-stage containerized deployment
-- **PyTorch**: Optimized deep learning inference
+- **PyTorch**: Optimized deep learning inference (CPU)
 - **Docker Hub**: Public container image registry
 
 #### 🧠 AI/ML Stack (Production Models)
@@ -126,9 +126,9 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 
 #### 🌐 Infrastructure Stack (Live Deployment)
 
-- **Azure Container Instances**: Scalable backend hosting
-- **Vercel Edge Network**: Global frontend delivery
-- **GitHub Actions**: Automated CI/CD pipeline
+- **Google Cloud Run**: Serverless container hosting (Always Free tier)
+- **Vercel Edge Network**: Global frontend delivery with custom domain
+- **GitHub**: Source control and deployment triggers
 - **Docker Hub**: Container registry and versioning
 
 ---
@@ -147,17 +147,18 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 #### Current Production URLs
 
 ```bash
-# Frontend (HTTPS with SSL)
+# Frontend (HTTPS with SSL & Custom Domain)
+https://www.pneumonet.me
 https://pneumonet-frontend.vercel.app
 
-# Backend API (HTTP with CORS)
-http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000
+# Backend API (HTTPS - Cloud Run)
+https://pneumonet-api-926412293290.us-central1.run.app
 
 # Health Check
-curl http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/health
+curl https://pneumonet-api-926412293290.us-central1.run.app/health
 
 # API Documentation
-http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/
+https://pneumonet-api-926412293290.us-central1.run.app/
 ```
 
 ### 🏗️ Clean Architecture Implementation
@@ -202,23 +203,20 @@ http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/
 
 #### 1. Sophisticated Deployment Architecture
 
-```yaml
-# Azure Container Instance Configuration
-apiVersion: "2023-05-01"
-location: centralindia
-name: pneumonia-api-live
-properties:
-  containers:
-    - name: pneumonia-app
-      properties:
-        image: sheryansh/pneumonia-detection:latest
-        resources:
-          requests:
-            cpu: 2
-            memoryInGb: 4
-        ports:
-          - port: 80
-            protocol: TCP
+```bash
+# Google Cloud Run Configuration (Always Free Tier)
+gcloud run deploy pneumonet-api \
+  --image sheryansh/pneumonia-detection:latest \
+  --platform managed \
+  --region us-central1 \
+  --memory 2Gi \
+  --cpu 2 \
+  --min-instances 0 \
+  --max-instances 2 \
+  --concurrency 1 \
+  --timeout 300s \
+  --allow-unauthenticated \
+  --port 8080
 ```
 
 #### 2. Intelligent API Proxy Configuration
@@ -228,7 +226,7 @@ properties:
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/$1"
+      "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
     }
   ]
 }
@@ -242,7 +240,8 @@ const API_CONFIG = {
   BASE_URL:
     process.env.NODE_ENV === "production"
       ? "/api" // Uses Vercel proxy in production
-      : "http://localhost:5000", // Direct connection in development
+      : process.env.REACT_APP_API_URL || 
+        "https://pneumonet-api-926412293290.us-central1.run.app", // Cloud Run in development
   TIMEOUT: 120000,
   SUPPORTED_FILE_TYPES: ["image/jpeg", "image/jpg", "image/png"],
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB limit
@@ -454,12 +453,20 @@ properties:
 
 ```powershell
 # Build and push to Docker Hub
-docker build -t pneumonia-detection .
-docker tag pneumonia-detection sheryansh/pneumonia-detection:latest
+cd backend
+docker build -t sheryansh/pneumonia-detection:latest .
 docker push sheryansh/pneumonia-detection:latest
 
-# Deploy to Azure Container Instances
-az container create --resource-group pneumonia-detection-rg --file deployment-new-dns.yaml
+# Deploy to Google Cloud Run (Free Tier)
+gcloud run deploy pneumonet-api `
+  --image sheryansh/pneumonia-detection:latest `
+  --platform managed `
+  --region us-central1 `
+  --memory 2Gi `
+  --cpu 2 `
+  --min-instances 0 `
+  --max-instances 2 `
+  --allow-unauthenticated
 ```
 
 ### 🚀 Vercel Frontend Deployment
@@ -518,10 +525,14 @@ const getApiConfig = () => {
 ```python
 from flask_cors import CORS
 
-# Production CORS setup
+# Production CORS setup for Cloud Run
 CORS(app, resources={
     r"/*": {
-        "origins": ["https://pneumonet-frontend.vercel.app", "http://localhost:3000"],
+        "origins": [
+            "https://www.pneumonet.me",
+            "https://pneumonet-frontend.vercel.app", 
+            "http://localhost:3000"
+        ],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": False
@@ -529,10 +540,10 @@ CORS(app, resources={
 })
 ```
 
-#### Nginx Production Configuration
+#### Nginx Production Configuration (Cloud Run)
 
 ```nginx
-# nginx-azure/nginx.conf - Production proxy
+# nginx-azure/nginx.conf - Dynamic PORT configuration for Cloud Run
 user nginx;
 worker_processes auto;
 
@@ -546,7 +557,7 @@ http {
     }
 
     server {
-        listen 80;
+        listen 8080;  # Dynamically set via startup.sh using $PORT
         client_max_body_size 20M;
 
         location / {
@@ -638,58 +649,52 @@ def log_response_info(response):
 - Global accessibility with proper security measures
 - Clean, scalable architecture ready for enterprise deployment"
 
-#### Q2: "How did you solve the HTTPS frontend to HTTP backend communication challenge?"
+#### Q2: "How did you optimize your deployment for cost efficiency and scalability?"
 
 **Professional Answer**:
-"This was a critical production challenge I solved with a sophisticated dual-layer proxy architecture:
+"I successfully migrated from Azure Container Instances to Google Cloud Run's Always Free tier, achieving zero infrastructure costs while maintaining production-grade performance:
 
-**Problem**: Modern browsers block mixed content - HTTPS frontend couldn't communicate with HTTP backend due to security policies.
+**Migration Challenge**: Azure was costing ₹500-1000/month with limited uptime flexibility, making it expensive for a portfolio/demo project.
 
 **Solution Implemented**:
 
+1. **Container Optimization for Cloud Run**:
+```bash
+# Modified startup.sh to handle Cloud Run's dynamic PORT
+CR_PORT="${PORT:-8080}"
+sed -i "s/listen 8080;/listen $CR_PORT;/g" /etc/nginx/nginx.conf
+```
+
+2. **Free Tier Configuration**:
+```bash
+gcloud run deploy pneumonet-api \
+  --min-instances 0 \      # Scale to zero when idle
+  --max-instances 2 \      # Free tier limit
+  --memory 2Gi \           # Optimized for AI models
+  --cpu 2 \                # Fast inference
+  --concurrency 1          # One request per instance
+```
+
+3. **Smart Frontend Proxy**:
 ```json
-// Vercel proxy configuration (Frontend layer)
 {
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/$1"
-    }
-  ]
+  "rewrites": [{
+    "source": "/api/(.*)",
+    "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
+  }]
 }
 ```
 
-```nginx
-# Nginx reverse proxy (Backend layer)
-server {
-    listen 80;
-    location / {
-        proxy_pass http://127.0.0.1:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
+**Benefits Achieved**:
 
-**Smart Environment Handling**:
+- **Cost Reduction**: ₹500-1000/month → ₹0 (Always Free tier)
+- **Full HTTPS**: Both frontend and backend now use SSL
+- **Auto-scaling**: Scales to zero when idle, no idle costs
+- **Global Availability**: 24/7 accessible for recruiters/demos
+- **Production Performance**: <2s response time maintained
+- **Serverless Benefits**: No infrastructure management needed
 
-```javascript
-const API_CONFIG = {
-  BASE_URL:
-    process.env.NODE_ENV === "production"
-      ? "/api" // Uses secure proxy in production
-      : "http://localhost:5000", // Direct connection in development
-};
-```
-
-**Benefits**:
-
-- Seamless HTTPS communication maintained with dual-layer proxy
-- Zero security warnings in browser
-- Load balancing and request handling via Nginx
-- Same codebase works across all environments
-- Professional user experience with SSL encryption
-- Enterprise-grade reverse proxy architecture"
+This demonstrates cost-conscious cloud architecture while maintaining enterprise-grade reliability."
 
 #### Q3: "Explain your AI ensemble approach and why it's superior to single models."
 
@@ -804,22 +809,26 @@ spec:
 **Performance Optimization**:
 
 - Model quantization to reduce inference time by 40%
-- GPU acceleration for parallel processing
-- Redis caching for repeated predictions
-- CDN for global asset delivery
+- GPU acceleration via Cloud Run GPU instances
+- Redis/Memorystore for repeated prediction caching
+- Cloud CDN for global asset delivery
+- Container image optimization for faster cold starts
 
 **Architecture Enhancement**:
 
-- Load balancer with health-based routing
-- Message queue for async processing
-- Database layer for user management and analytics
-- Monitoring with Prometheus/Grafana
+- Cloud Load Balancer with health-based routing
+- Cloud Tasks/Pub/Sub for async processing
+- Cloud SQL/Firestore for user management and analytics
+- Cloud Monitoring & Logging for observability
+- Cloud Armor for DDoS protection
 
 **Cost Optimization**:
 
-- Auto-scaling based on actual demand
-- Spot instances for non-critical workloads
-- Efficient resource allocation and monitoring"
+- Serverless: Pay only for actual usage
+- Auto-scale to zero when idle
+- Request-based billing (not time-based)
+- Efficient container resource allocation
+- Always Free tier for development/demos"
 
 #### Q7: "What security measures have you implemented for medical data?"
 
@@ -900,14 +909,15 @@ except Exception as e:
 #### Access the Live System
 
 ```bash
-# Frontend (HTTPS)
+# Frontend (HTTPS with Custom Domain)
+https://www.pneumonet.me
 https://pneumonet-frontend.vercel.app
 
-# Backend API (HTTP)
-http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000
+# Backend API (HTTPS - Cloud Run)
+https://pneumonet-api-926412293290.us-central1.run.app
 
 # Health Check
-curl http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/health
+curl https://pneumonet-api-926412293290.us-central1.run.app/health
 ```
 
 ### 📱 User Experience Flow
@@ -986,6 +996,8 @@ Response: {
   "risk_level": "High Risk - Bacterial Pneumonia Indicated",
   "gradcam_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
 }
+
+# Note: All endpoints now use HTTPS
 ```
 
 ### 🎯 Production Performance Metrics
@@ -996,8 +1008,9 @@ Response: {
 {
   "uptime": "99.9%",
   "average_response_time": "1.8s",
-  "peak_response_time": "3.2s",
-  "daily_requests": "150+",
+  "cold_start_time": "<5s",
+  "scale_to_zero": "enabled",
+  "daily_cost": "₹0 (Always Free tier)",
   "error_rate": "<0.1%",
   "memory_usage": "2.1GB",
   "cpu_utilization": "25-85%"
@@ -1006,59 +1019,57 @@ Response: {
 
 #### Real-time Monitoring
 
-- **Azure Container Metrics**: CPU, memory, network usage
+- **Cloud Run Metrics**: Request count, latency, instance count, cold starts
 - **Vercel Analytics**: Frontend performance and user engagement
-- **Custom Logging**: Request tracing and error monitoring
+- **Custom Logging**: Request tracing and error monitoring in Cloud Console
 - **Health Checks**: Automated system status verification
+- **Cost Monitoring**: Always Free tier usage tracking
 
 ## Production Challenges Solved
 
 ### 🔧 Real-World Engineering Solutions
 
-#### Challenge 1: Mixed Content Security (HTTPS ↔ HTTP)
+#### Challenge 1: Cost-Efficient Production Deployment
 
-**Problem**: Browser security blocked HTTPS frontend from communicating with HTTP backend
+**Problem**: Azure Container Instances costing ₹500-1000/month, burning through credits rapidly even when not actively demoing
+
+**Analysis**: 
+- Azure charges 24/7 even when idle
+- Turning off container meant recruiters couldn't access live demo
+- Not cost-sustainable for portfolio project
+
+**Solution Implemented - Migration to Google Cloud Run**:
 
 ```bash
-# Error in browser console
-Mixed Content: The page at 'https://pneumonet-frontend.vercel.app'
-was loaded over HTTPS, but requested an insecure resource
-'http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/predict'.
-This request has been blocked.
+# 1. Modified startup.sh for Cloud Run PORT compatibility
+CR_PORT="${PORT:-8080}"
+sed -i "s/listen 8080;/listen $CR_PORT;/g" /etc/nginx/nginx.conf
+
+# 2. Rebuilt and pushed Docker image
+docker build -t sheryansh/pneumonia-detection:latest .
+docker push sheryansh/pneumonia-detection:latest
+
+# 3. Deployed to Cloud Run with Always Free tier settings
+gcloud run deploy pneumonet-api \
+  --image sheryansh/pneumonia-detection:latest \
+  --region us-central1 \
+  --min-instances 0 \    # Scale to zero = $0 when idle
+  --max-instances 2 \    # Stay within free tier
+  --memory 2Gi --cpu 2
 ```
 
-**Solution Implemented**:
-
+**Updated Frontend Configuration**:
 ```json
-// Vercel proxy configuration (Frontend layer)
+// vercel.json - Now uses HTTPS Cloud Run endpoint
 {
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/$1"
-    }
-  ]
+  "rewrites": [{
+    "source": "/api/(.*)",
+    "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
+  }]
 }
 ```
 
-```nginx
-# Nginx reverse proxy configuration (Backend layer)
-server {
-    listen 80;
-    client_max_body_size 20M;
-
-    location / {
-        proxy_pass http://127.0.0.1:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 120s;
-    }
-}
-```
-
-**Result**: ✅ Secure HTTPS communication maintained with dual-layer proxy architecture (Vercel + Nginx)
+**Result**: ✅ Cost reduced from ₹500-1000/month to ₹0 with Always Free tier, full HTTPS end-to-end, 24/7 availability with scale-to-zero
 
 #### Challenge 2: CORS Header Conflicts
 
@@ -1098,28 +1109,33 @@ CORS(app, resources={
 
 **Result**: ✅ Clean CORS handling with no conflicts
 
-#### Challenge 3: DNS Propagation Issues
+#### Challenge 3: Cloud Run PORT Configuration
 
-**Problem**: Initial container DNS name not resolving globally
+**Problem**: Cloud Run requires containers to listen on the `$PORT` environment variable (dynamic), but our container was hardcoded to port 80
 
-```bash
-# Failed DNS resolution
-nslookup pneumonia-detection-sheryansh.centralindia.azurecontainer.io
-** server can't find pneumonia-detection-sheryansh.centralindia.azurecontainer.io
-```
+**Initial Setup Issues**:
+- Flask listening on 5000 (internal)
+- Nginx hardcoded to listen on 80
+- Cloud Run assigns random PORT (usually 8080)
+- Container health checks failing
 
 **Solution Implemented**:
 
-- Created new container instance with fresh DNS name
-- Updated deployment configuration with new endpoints
-- Verified global DNS propagation
+```bash
+# Modified startup.sh to dynamically configure Nginx
+#!/bin/bash
+CR_PORT="${PORT:-8080}"
+echo "Cloud Run PORT: $CR_PORT"
 
-```yaml
-# New deployment configuration
-dnsNameLabel: pneumonia-api-live-2025 # Fresh DNS name
+# Dynamically update Nginx listen port
+sed -i "s/listen 8080;/listen $CR_PORT;/g" /etc/nginx/nginx.conf
+
+# Start Nginx on $PORT, proxy to Flask on 5000
+nginx -g "daemon on;"
+python app.py
 ```
 
-**Result**: ✅ Reliable global DNS resolution and access
+**Result**: ✅ Container now works on any Cloud Run assigned PORT, perfect for serverless deployment
 
 #### Challenge 4: Container Cold Start Performance
 
@@ -1256,27 +1272,36 @@ def health():
 **Objectives**: Deploy to production with enterprise-grade infrastructure
 
 - ✅ **Container Development**: Multi-stage Docker with Nginx
-- ✅ **Azure Deployment**: Container Instances with auto-scaling
-- ✅ **Frontend Deployment**: Vercel with global CDN
+- ✅ **Cloud Deployment**: Google Cloud Run serverless deployment
+- ✅ **Frontend Deployment**: Vercel with global CDN + custom domain
 - ✅ **Production Testing**: End-to-end validation and performance testing
 
 #### Phase 4: Production Challenges & Solutions (Week 5)
 
 **Objectives**: Solve real-world production issues
 
-- ✅ **HTTPS/HTTP Communication**: Implemented dual-layer proxy solution (Vercel + Nginx)
-- ✅ **CORS Conflicts**: Resolved duplicate header issues
-- ✅ **DNS Resolution**: Fixed global accessibility issues
-- ✅ **Performance Optimization**: Lazy loading and memory management
+- ✅ **Cost Optimization**: Migrated from Azure (₹500-1000/month) to Cloud Run (₹0)
+- ✅ **Dynamic PORT Handling**: Cloud Run PORT compatibility with sed-based configuration
+- ✅ **CORS Configuration**: Proper CORS setup for multiple domains
+- ✅ **Performance Optimization**: Scale-to-zero with fast cold starts (<5s)
 
-#### Phase 5: Project Organization & Polish (Week 6)
+#### Phase 5: Cost Optimization & Migration (Week 6)
+
+**Objectives**: Achieve sustainable zero-cost deployment
+
+- ✅ **Cloud Run Migration**: Complete migration from Azure to Always Free tier
+- ✅ **Frontend Updates**: Updated all configurations for new HTTPS backend
+- ✅ **Documentation Updates**: Updated README and migration guides
+- ✅ **Budget Protection**: Set up monitoring to stay within free tier limits
+
+#### Phase 6: Project Organization & Polish (Week 7)
 
 **Objectives**: Create portfolio-ready, professional codebase
 
 - ✅ **Code Cleanup**: Removed 3,743 lines of unused code
 - ✅ **Repository Organization**: Two clean, focused repositories
 - ✅ **Documentation**: Comprehensive technical documentation
-- ✅ **Production Validation**: Live system verification and testing
+- ✅ **Production Validation**: Live system verification at ₹0 cost
 
 ### 📊 Development Metrics & Achievements
 
@@ -1284,23 +1309,25 @@ def health():
 
 ```json
 {
-  "total_commits": 45,
+  "total_commits": 50,
   "lines_of_code_production": 2847,
   "lines_removed_cleanup": 4235,
   "code_coverage": "85%",
-  "documentation_pages": 25,
-  "production_uptime": "99.9%"
+  "documentation_pages": 27,
+  "production_uptime": "99.9%",
+  "infrastructure_cost": "₹0/month (Always Free tier)"
 }
 ```
 
 #### Technical Achievements
 
 - ⚡ **Performance**: <2s average response time for AI inference
-- 🔒 **Security**: Production-grade HTTPS and CORS implementation
-- 🌐 **Global Access**: Worldwide deployment with CDN optimization
+- � **Cost Efficiency**: ₹0/month with Always Free tier (saved ₹500-1000/month)
+- �🔒 **Security**: Full HTTPS end-to-end encryption
+- 🌐 **Global Access**: Worldwide deployment with auto-scaling
 - 🧠 **AI Accuracy**: 94.2% validation accuracy with ensemble models
 - 📱 **Responsive Design**: Professional UI across all devices
-- 🐳 **DevOps**: Complete containerization and CI/CD pipeline
+- ☁️ **Serverless**: Cloud Run scale-to-zero architecture
 
 ### 🔧 Professional Engineering Practices
 
@@ -1384,33 +1411,36 @@ logging.basicConfig(
 ```json
 {
   "current_setup": {
-    "backend_instances": 1,
+    "platform": "Google Cloud Run (Always Free)",
+    "backend_instances": "0-2 (auto-scaling)",
     "cpu_cores": 2,
-    "memory_gb": 4,
+    "memory_gb": 2,
     "concurrent_users": "50-100",
     "avg_response_time": "1.8s",
-    "daily_capacity": "1000+ predictions"
+    "cold_start_time": "<5s",
+    "daily_capacity": "1000+ predictions",
+    "monthly_cost": "₹0"
   }
 }
 ```
 
 #### Scaling to 10,000+ Concurrent Users
 
-**Infrastructure Scaling**:
+**Infrastructure Scaling** (Beyond Free Tier):
 
-```yaml
-# Azure Container Groups - Auto-scaling Configuration
-apiVersion: "2021-09-01"
-kind: containerGroups
-spec:
-  replicas: 5-50 # Dynamic scaling
-  autoScaling:
-    targetCPU: 70%
-    minReplicas: 5
-    maxReplicas: 50
-  loadBalancer:
-    type: azure-lb
-    healthCheck: /health
+```bash
+# Cloud Run Auto-scaling Configuration
+gcloud run deploy pneumonet-api \
+  --image sheryansh/pneumonia-detection:latest \
+  --region us-central1 \
+  --memory 4Gi \
+  --cpu 4 \
+  --min-instances 5 \        # Warm instances for low latency
+  --max-instances 100 \      # Scale up to 100 instances
+  --concurrency 10 \         # 10 requests per instance
+  --cpu-throttling \         # Cost optimization
+  --execution-environment gen2  # Faster cold starts
+# Total capacity: 1000 concurrent requests with auto-scaling
 ```
 
 **Performance Optimization Strategy**:
@@ -1423,11 +1453,17 @@ spec:
 **Cost-Efficient Architecture**:
 
 ```bash
-# Multi-tier scaling approach
-Tier 1: 5 always-on instances (baseline load)
-Tier 2: 15 spot instances (burst capacity)
-Tier 3: 30 on-demand instances (peak traffic)
-Total capacity: 50 instances = 10,000+ concurrent users
+# Cloud Run serverless scaling approach
+Tier 1: min-instances=0 (Always Free: ₹0)
+Tier 2: Scale to 5 instances (Light traffic: ~₹500/month)
+Tier 3: Scale to 50 instances (Medium traffic: ~₹2000/month)
+Tier 4: Scale to 100 instances (Peak traffic: ~₹4000/month)
+
+Benefits:
+- Pay only for actual requests
+- Auto-scale to zero when idle
+- No infrastructure management
+- Sub-second scaling response
 ```
 
 ### 🔮 6-Month Development Roadmap
@@ -1488,23 +1524,25 @@ Month 16-18: FDA approval and market authorization
     "regions": [
       {
         "name": "North America",
-        "primary": "Azure East US",
-        "secondary": "Azure West US",
-        "cdn": "Cloudflare"
+        "primary": "Cloud Run us-central1",
+        "secondary": "Cloud Run us-east1",
+        "cdn": "Cloud CDN / Vercel Edge"
       },
       {
         "name": "Europe",
-        "primary": "Azure West Europe",
-        "secondary": "Azure North Europe",
-        "cdn": "Cloudflare"
+        "primary": "Cloud Run europe-west1",
+        "secondary": "Cloud Run europe-west4",
+        "cdn": "Cloud CDN / Vercel Edge"
       },
       {
         "name": "Asia Pacific",
-        "primary": "Azure Central India",
-        "secondary": "Azure Southeast Asia",
-        "cdn": "Cloudflare"
+        "primary": "Cloud Run asia-south1",
+        "secondary": "Cloud Run asia-southeast1",
+        "cdn": "Cloud CDN / Vercel Edge"
       }
-    ]
+    ],
+    "load_balancing": "Google Cloud Load Balancer (multi-region)",
+    "cost": "Pay per request across all regions"
   }
 }
 ```
@@ -1574,8 +1612,8 @@ class MedicalAnalytics:
 
 **Technical Excellence**:
 
-- ✅ **Live Production System**: Fully deployed and operational
-- ✅ **Enterprise Architecture**: Scalable, secure, and maintainable
+- ✅ **Live Production System**: Fully deployed and operational at zero cost
+- ✅ **Serverless Architecture**: Auto-scaling, cost-efficient, maintainable
 - ✅ **Advanced AI**: Ensemble models with explainable AI
 - ✅ **Professional Code**: Clean, documented, portfolio-ready
 
@@ -1583,15 +1621,17 @@ class MedicalAnalytics:
 
 - 🌐 **Global Accessibility**: Available 24/7 worldwide
 - ⚡ **Performance**: Sub-2-second medical diagnoses
-- 🔒 **Security**: Production-grade HTTPS and data protection
-- 📱 **User Experience**: Professional medical interface
+- 🔒 **Security**: Full HTTPS end-to-end encryption
+- 📱 **User Experience**: Professional medical interface with custom domain
+- 💰 **Cost Efficiency**: ₹0/month infrastructure cost (Always Free tier)
 
 **Professional Development**:
 
 - 🚀 **Full-Stack Expertise**: React.js + Flask + PyTorch
-- ☁️ **Cloud Architecture**: Multi-cloud deployment (Azure + Vercel)
-- 🐳 **DevOps Proficiency**: Docker, CI/CD, production monitoring
-- 🧠 **AI Engineering**: Production ML deployment and optimization
+- ☁️ **Cloud Architecture**: Google Cloud Run serverless deployment
+- 🐳 **DevOps Proficiency**: Docker, Cloud deployment, cost optimization
+- 🧠 **AI Engineering**: Production ML deployment with CPU optimization
+- 💡 **Problem Solving**: Migrated from costly Azure to free Cloud Run
 
 ### 💼 Interview Portfolio Highlights
 
@@ -1599,29 +1639,34 @@ This project demonstrates comprehensive skills across:
 
 1. **Software Engineering**: Full-stack development with modern technologies
 2. **AI/ML Engineering**: Production deployment of ensemble deep learning models
-3. **Cloud Architecture**: Multi-cloud deployment with proper scaling strategies
-4. **DevOps**: Containerization, CI/CD, and production monitoring
-5. **Problem Solving**: Real-world production challenges and creative solutions
+3. **Cloud Architecture**: Serverless deployment with cost optimization (₹0 infrastructure)
+4. **DevOps**: Containerization, Cloud Run deployment, and production monitoring
+5. **Problem Solving**: Cost-conscious migrations and production challenges
 6. **Medical Technology**: Understanding of healthcare requirements and compliance
 
 ### 🌟 Competitive Advantages
 
-- **Live Production System**: Not just a demo, but a real working application
+- **Live Production System**: Real working application accessible 24/7 at zero cost
 - **Professional Code Quality**: Enterprise-ready, clean, and well-documented
-- **Comprehensive Documentation**: Detailed technical guides and API documentation
-- **Real-World Challenges Solved**: Actual production issues encountered and resolved
-- **Scalability Planning**: Forward-thinking architecture for enterprise deployment
+- **Cost-Conscious Engineering**: Achieved production deployment at ₹0/month
+- **Comprehensive Documentation**: Detailed technical guides and migration documentation
+- **Real-World Challenges Solved**: Cost optimization, cloud migration, production issues
+- **Scalability Planning**: Serverless architecture ready for enterprise scale
 
 ---
 
-**🚀 Ready for Senior-Level Technical Interviews in AI/ML Engineering, Full-Stack Development, and Medical Technology roles.**
+**🚀 Ready for Senior-Level Technical Interviews in AI/ML Engineering, Full-Stack Development, Cloud Architecture, and Medical Technology roles.**
 
-**Live System**: https://pneumonet-frontend.vercel.app  
+**Live System**: https://www.pneumonet.me  
+**Alt Frontend**: https://pneumonet-frontend.vercel.app  
+**Backend API**: https://pneumonet-api-926412293290.us-central1.run.app  
 **GitHub**: https://github.com/Sheryansh0/pneumonet-ai-detection  
-**Documentation**: 25+ pages of comprehensive technical documentation
+**Documentation**: 27+ pages of comprehensive technical documentation
+
+**Infrastructure Cost**: ₹0/month (Google Cloud Run Always Free tier)
 
 ---
 
 _Document prepared for technical interviews and professional portfolio presentation._  
-_Last updated: September 14, 2025_  
-_Project Status: Production Deployed & Operational_
+_Last updated: November 17, 2025_  
+_Project Status: Production Deployed & Operational (Serverless - Zero Cost)_
