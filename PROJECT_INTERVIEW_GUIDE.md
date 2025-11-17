@@ -45,8 +45,8 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 - 📊 **Confidence Scoring**: Percentage confidence with intelligent risk level assessment
 - 🔍 **Explainable AI**: Grad-CAM heatmaps showing AI decision reasoning
 - 🌐 **Production Web Interface**: Professional React.js frontend with intuitive drag-and-drop
-- ☁️ **Enterprise Cloud Deployment**: Containerized microservices on Azure and Vercel
-- 🔒 **Security**: HTTPS frontend with CORS-enabled backend communication
+- ☁️ **Enterprise Cloud Deployment**: Containerized microservices on Google Cloud Run and Vercel
+- 🔒 **Security**: Full HTTPS end-to-end with CORS-enabled backend communication
 - 📱 **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
 
 ---
@@ -70,7 +70,7 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
 │  │   React.js App  │  │  Tailwind CSS   │  │  Proxy Config   │ │
 │  │   Professional │  │  Modern Design  │  │  API Routing    │ │
-│  │   Components    │  │  Responsive     │  │  /api/* → Azure │ │
+│  │   Components    │  │  Responsive     │  │  /api/* → CR    │ │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
 │                     🔒 SSL Enabled + CDN                       │
 └─────────────────────────────────────────────────────────────────┘
@@ -105,7 +105,7 @@ PneumoNet AI is a **production-deployed** intelligent medical diagnostic system 
 - **React.js 18+**: Modern functional components with hooks
 - **Tailwind CSS**: Professional responsive design system
 - **Vercel Platform**: Edge deployment with global CDN
-- **API Proxy**: Seamless HTTPS→HTTP backend communication
+- **API Proxy**: Seamless HTTPS→HTTPS backend communication via Cloud Run
 - **Custom Components**: Professional UI component library
 
 #### ⚙️ Backend Stack (Google Cloud Run)
@@ -174,7 +174,7 @@ https://pneumonet-api-926412293290.us-central1.run.app/
 │   ├── 🧠 convnext_pneumonia.pth   # Trained ConvNeXt model
 │   ├── 🧠 efficientnet_pneumonia.pth # Trained EfficientNet model
 │   ├── 🐳 Dockerfile               # Production container
-│   ├── ⚙️ deployment-new-dns.yaml # Azure deployment config
+│   ├── ⚙️ deployment-new-dns.yaml # Legacy Azure config (archived)
 │   ├── 📋 requirements.txt         # Python dependencies
 │   └── 📁 nginx-azure/            # Nginx configuration
 └── 📁 frontend/                   # Production frontend
@@ -240,7 +240,7 @@ const API_CONFIG = {
   BASE_URL:
     process.env.NODE_ENV === "production"
       ? "/api" // Uses Vercel proxy in production
-      : process.env.REACT_APP_API_URL || 
+      : process.env.REACT_APP_API_URL ||
         "https://pneumonet-api-926412293290.us-central1.run.app", // Cloud Run in development
   TIMEOUT: 120000,
   SUPPORTED_FILE_TYPES: ["image/jpeg", "image/jpg", "image/png"],
@@ -418,35 +418,26 @@ python app.py
 wait
 ```
 
-### ☁️ Azure Production Deployment
+### ☁️ Google Cloud Run Production Deployment
 
-#### Container Instance Configuration
+#### Cloud Run Configuration (Always Free Tier)
 
-```yaml
-# deployment-new-dns.yaml - Live production config
-apiVersion: "2023-05-01"
-location: centralindia
-type: Microsoft.ContainerInstance/containerGroups
-properties:
-  containers:
-    - name: pneumonia-app
-      properties:
-        image: sheryansh/pneumonia-detection:latest
-        resources:
-          requests:
-            cpu: 2
-            memoryInGb: 4
-        ports:
-          - port: 80
-            protocol: TCP
-  osType: Linux
-  restartPolicy: Always
-  ipAddress:
-    type: Public
-    ports:
-      - protocol: TCP
-        port: 80
-    dnsNameLabel: pneumonia-api-live-2025
+```bash
+# Production deployment configuration
+gcloud run deploy pneumonet-api \
+  --image sheryansh/pneumonia-detection:latest \
+  --platform managed \
+  --region us-central1 \
+  --memory 2Gi \
+  --cpu 2 \
+  --min-instances 0 \
+  --max-instances 2 \
+  --concurrency 1 \
+  --timeout 300s \
+  --allow-unauthenticated \
+  --port 8080
+
+# Result: https://pneumonet-api-926412293290.us-central1.run.app
 ```
 
 #### Production Deployment Commands
@@ -457,7 +448,7 @@ cd backend
 docker build -t sheryansh/pneumonia-detection:latest .
 docker push sheryansh/pneumonia-detection:latest
 
-# Deploy to Google Cloud Run (Free Tier)
+# Deploy to Google Cloud Run (Always Free Tier)
 gcloud run deploy pneumonet-api `
   --image sheryansh/pneumonia-detection:latest `
   --platform managed `
@@ -466,6 +457,7 @@ gcloud run deploy pneumonet-api `
   --cpu 2 `
   --min-instances 0 `
   --max-instances 2 `
+  --concurrency 1 `
   --allow-unauthenticated
 ```
 
@@ -487,7 +479,7 @@ gcloud run deploy pneumonet-api `
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "http://pneumonia-api-live-2025.centralindia.azurecontainer.io:5000/$1"
+      "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
     }
   ],
   "routes": [
@@ -530,7 +522,7 @@ CORS(app, resources={
     r"/*": {
         "origins": [
             "https://www.pneumonet.me",
-            "https://pneumonet-frontend.vercel.app", 
+            "https://pneumonet-frontend.vercel.app",
             "http://localhost:3000"
         ],
         "methods": ["GET", "POST", "OPTIONS"],
@@ -557,13 +549,15 @@ http {
     }
 
     server {
-        listen 8080;  # Dynamically set via startup.sh using $PORT
+        listen 8080;  # Dynamically replaced by startup.sh with Cloud Run's $PORT
         client_max_body_size 20M;
 
         location / {
             proxy_pass http://flask_backend;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
             proxy_connect_timeout 60s;
             proxy_send_timeout 60s;
             proxy_read_timeout 120s;
@@ -632,22 +626,23 @@ def log_response_info(response):
 
 - React.js application deployed on Vercel's edge network
 - Professional UI with Tailwind CSS for responsive design
-- Intelligent API proxy that routes `/api/*` requests to Azure backend
+- Intelligent API proxy that routes `/api/*` requests to Google Cloud Run backend
 - HTTPS enabled with global CDN for optimal performance
 
-**Backend (Azure Container Instance)**:
+**Backend (Google Cloud Run - Always Free Tier)**:
 
-- Flask API containerized with Docker and deployed on Azure
-- Multi-stage container with Nginx reverse proxy for load balancing
+- Flask API containerized with Docker and deployed on Cloud Run
+- Multi-stage container with Nginx reverse proxy dynamically configured for Cloud Run's PORT
 - Ensemble AI models (ConvNeXt + EfficientNet) for pneumonia detection
-- Production-ready with health checks, error handling, and CORS configuration
+- Production-ready with health checks, error handling, CORS, and serverless auto-scaling
 
 **Key Production Features**:
 
-- 99.9% uptime with automated container management
+- 99.9% uptime with serverless auto-scaling
 - <2 second average response time for AI predictions
-- Global accessibility with proper security measures
-- Clean, scalable architecture ready for enterprise deployment"
+- Global accessibility with full HTTPS end-to-end
+- Zero infrastructure cost with Always Free tier
+- Clean, scalable serverless architecture ready for enterprise deployment"
 
 #### Q2: "How did you optimize your deployment for cost efficiency and scalability?"
 
@@ -659,6 +654,7 @@ def log_response_info(response):
 **Solution Implemented**:
 
 1. **Container Optimization for Cloud Run**:
+
 ```bash
 # Modified startup.sh to handle Cloud Run's dynamic PORT
 CR_PORT="${PORT:-8080}"
@@ -666,6 +662,7 @@ sed -i "s/listen 8080;/listen $CR_PORT;/g" /etc/nginx/nginx.conf
 ```
 
 2. **Free Tier Configuration**:
+
 ```bash
 gcloud run deploy pneumonet-api \
   --min-instances 0 \      # Scale to zero when idle
@@ -676,12 +673,15 @@ gcloud run deploy pneumonet-api \
 ```
 
 3. **Smart Frontend Proxy**:
+
 ```json
 {
-  "rewrites": [{
-    "source": "/api/(.*)",
-    "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
-  }]
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
+    }
+  ]
 }
 ```
 
@@ -754,22 +754,16 @@ az container create --resource-group pneumonia-detection-rg --file deployment-ne
 
 **Infrastructure as Code**:
 
-- YAML-based Azure deployment configurations
+- Cloud Run deployment via gcloud CLI
 - Environment-specific configuration management
-- Automated scaling and restart policies"
+- Serverless auto-scaling and zero-downtime deployments"
 
 #### Q5: "What production challenges did you encounter and how did you solve them?"
 
 **Professional Answer**:
 "Several critical production challenges required sophisticated solutions:
 
-**Challenge 1: DNS Propagation Issues**
-
-- **Problem**: Initial container DNS not resolving globally
-- **Solution**: Created new container instance with fresh DNS name
-- **Result**: Reliable global access with proper DNS propagation
-
-**Challenge 2: CORS Header Conflicts**
+**Challenge 1: CORS Header Conflicts**
 
 - **Problem**: Duplicate CORS headers from both Nginx and Flask
 - **Solution**: Removed CORS from Nginx, handled exclusively in Flask
@@ -1033,7 +1027,8 @@ Response: {
 
 **Problem**: Azure Container Instances costing ₹500-1000/month, burning through credits rapidly even when not actively demoing
 
-**Analysis**: 
+**Analysis**:
+
 - Azure charges 24/7 even when idle
 - Turning off container meant recruiters couldn't access live demo
 - Not cost-sustainable for portfolio project
@@ -1059,13 +1054,16 @@ gcloud run deploy pneumonet-api \
 ```
 
 **Updated Frontend Configuration**:
+
 ```json
 // vercel.json - Now uses HTTPS Cloud Run endpoint
 {
-  "rewrites": [{
-    "source": "/api/(.*)",
-    "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
-  }]
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://pneumonet-api-926412293290.us-central1.run.app/$1"
+    }
+  ]
 }
 ```
 
@@ -1114,6 +1112,7 @@ CORS(app, resources={
 **Problem**: Cloud Run requires containers to listen on the `$PORT` environment variable (dynamic), but our container was hardcoded to port 80
 
 **Initial Setup Issues**:
+
 - Flask listening on 5000 (internal)
 - Nginx hardcoded to listen on 80
 - Cloud Run assigns random PORT (usually 8080)
@@ -1254,7 +1253,7 @@ def health():
 **Objectives**: Design scalable, production-ready system architecture
 
 - ✅ **Technology Stack Selection**: React.js + Flask + PyTorch for optimal performance
-- ✅ **Cloud Provider Evaluation**: Chose Azure for backend, Vercel for frontend
+- ✅ **Cloud Provider Evaluation**: Initially Azure, migrated to Google Cloud Run for cost efficiency
 - ✅ **AI Model Strategy**: Ensemble approach for medical-grade accuracy
 - ✅ **Security Planning**: HTTPS, CORS, and medical data protection
 
@@ -1272,7 +1271,7 @@ def health():
 **Objectives**: Deploy to production with enterprise-grade infrastructure
 
 - ✅ **Container Development**: Multi-stage Docker with Nginx
-- ✅ **Cloud Deployment**: Google Cloud Run serverless deployment
+- ✅ **Initial Cloud Deployment**: Azure Container Instances (later migrated)
 - ✅ **Frontend Deployment**: Vercel with global CDN + custom domain
 - ✅ **Production Testing**: End-to-end validation and performance testing
 
