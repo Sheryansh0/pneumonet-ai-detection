@@ -36,7 +36,7 @@
 
 https://github.com/user-attachments/assets/your-video-id-here
 
-<!-- Uploading "Screen Recording 2025-09-14 151152.mp4.mp4"... -->
+https://github.com/user-attachments/assets/8fcec46f-808e-44bb-9208-2aeccc061115
 
 _Watch the complete system demonstration showing live pneumonia detection with real-time AI analysis, Grad-CAM visualization, and professional medical interface._
 
