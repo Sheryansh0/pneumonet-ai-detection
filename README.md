@@ -26,7 +26,7 @@
 | -------------------- | ------------- | ------------------------------------------------------------------------------ | -------------- |
 | 🎨 Frontend          | 🟢 **LIVE**   | [www.pneumonet.me](https://www.pneumonet.me)                                   | 100% uptime   |
 | 🎨 Frontend (Backup) | 🟢 **LIVE**   | [pneumonet-frontend.vercel.app](https://pneumonet-frontend.vercel.app)         | Global CDN     |
-| 🧠 Backend API       | 🟢 **LIVE**   | [Google Cloud Run]                                                             | <2s response   |
+| 🧠 Backend API       | 🟢 **LIVE**   | Google Cloud Run                                                               | <2s response   |
 | 📱 GitHub Main       | 🟢 **ACTIVE** | [pneumonet-ai-detection](https://github.com/Sheryansh0/pneumonet-ai-detection) | Clean codebase |
 | 📱 GitHub Frontend   | 🟢 **ACTIVE** | [pneumonet-frontend](https://github.com/Sheryansh0/pneumonet-frontend)         | Responsive UI  |
 
